@@ -15,7 +15,7 @@ export class DataService {
   private populateRoutes() {
     this.combinedRoutes = actionRoutes.map(actionRoute => {
       let matchingRoute = noActionRoutes.find(noActionRoute => {
-        return noActionRoute.RouteNumber === actionRoute.RouteNumber && noActionRoute.Name === actionRoute.Name && noActionRoute.MgtRngDist === actionRoute.MgtRngDist && noActionRoute.GIS_Miles === actionRoute.TxtSegMi;
+        return noActionRoute.RouteNumber === actionRoute.RouteNumber && noActionRoute.Name === actionRoute.Name && noActionRoute.MgtRngDist === actionRoute.MgtRngDist && (noActionRoute.GIS_Miles === actionRoute.TxtSegMi || noActionRoute.GIS_Miles === actionRoute.GIS_Miles);
       });
       matchingRoute = matchingRoute || noActionRoutes.find(noActionRoute => {
         return noActionRoute.RouteNumber === actionRoute.RouteNumber && noActionRoute.Name === actionRoute.Name && noActionRoute.MgtRngDist === actionRoute.MgtRngDist;
