@@ -1,5 +1,283 @@
 <div class="container mt-5">
   <div class="row">
-    <h2>Forest {{road.RouteType | titlecase}} {{road.RouteNumber}}: {{road.Name}}</h2>
+    <h1>Forest {{road.RouteType | titlecase}} {{road.RouteNumber}}: {{road.Name}}</h1>
+  </div>
+  <div class="row mt-2">
+      <h3>Route Details</h3>
+  </div>
+  <div class="row">
+    <ul>
+        <li><strong>Managing Ranger District:</strong> {{road.MgtRngDist}}</li>
+        <li><strong>Administrative Ranger District:</strong> {{road.AdmRngDist}}</li>
+        <li><strong>Seasonal Closure Designation:</strong> {{road.Seasonal}}</li>
+        <li><strong>Beginning Milepost:</strong> {{road.TxtBMP}} miles</li>
+        <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} miles</li>
+        <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} miles</li>
+        <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} miles</li>
+        <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} miles</li>
+        <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} miles</li>
+      </ul>
+  </div>
+  <div class="row mt-2">
+      <h3>Travel Analysis Scores</h3>
+  </div>
+  <div class="row mt-2">
+    <h5 class="ml-3">Combined Benefit/Risk Rating: {{road.TAPcombRat}}</h5>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Benefits</h4>
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Recreational Use</th>
+            <td>{{road.TAPrecRat}}</td>
+          </tr>
+          <tr>
+            <th>Fire/Fuels Access</th>
+            <td>{{road.TAPfireRat}}</td>
+          </tr>
+          <tr>
+            <th>Timber Access</th>
+            <td>{{road.TAPtimbRat}}</td>
+          </tr>
+          <tr>
+            <th>Special Use Access</th>
+            <td>{{road.TAPspecRat}}</td>
+          </tr>
+          <tr>
+            <th>Resource Management/Range Access</th>
+            <td>{{road.TAPrangRat}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+      <h4>Risks</h4>
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Watershed Risk</th>
+            <td>{{road.TAPwatRat}}</td>
+          </tr>
+          <tr>
+            <th>Wildlife Risk</th>
+            <td>{{road.TAPwildRat}}</td>
+          </tr>
+          <tr>
+            <th>Botany Risk</th>
+            <td>{{road.TAPbotRat}}</td>
+          </tr>
+          <tr>
+            <th>Archaeology Risk</th>
+            <td>{{road.TAParchRat}}</td>
+          </tr>
+          <tr>
+            <th>Public Health and Safety/Financial Burden Risk</th>
+            <td>{{road.TAPfinRat}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row mt-2">
+      <h3>Screening Criteria</h3>
+  </div>
+  <div class="row">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th>Does the route or area intersect with impaired watersheds?</th>
+          <td>{{road.WtrShedImp}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with wetlands?</th>
+          <td>{{road.Wetland}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with riparian areas?</th>
+          <td>{{road.Riparian}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with FEMA high-risk flood hazard areas?</th>
+          <td>{{road.HiRiskFlod}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with soils having erosion potential of 0.43 or greater (erosive soils)?</th>
+          <td>{{road.ErosSoils}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with invasive plant species?</th>
+          <td>{{road.InvasSpec}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with riparian or alpine vegetation communities?</th>
+          <td>{{road.VegeComm}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with critical habitat for species federally thsted as threatened or endangered?</th>
+          <td>{{road.CriticlHab}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with the wildthfe habitat identified in the Colorado Parks and Wildthfe Species Activity Mapping Data?</th>
+          <td>{{road.Wildlife}}</td>
+        </tr>
+        <tr>
+          <th>Is the route or area located within 0.5 miles of a nonmotorized trail?</th>
+          <td>{{road.QuietUse}}</td>
+        </tr>
+        <tr>
+          <th>Is the route, area, or parking location within 3 miles of a gateway community?</th>
+          <td>{{road.DedEndQuit}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a trail open to all vehicles, with the potential confthct among different classes of motor vehicles?</th>
+          <td>{{road.MotVehConf}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a road where the desired maintenance level is not the same as the current maintenance level, and the motor vehicle use may not be compatible with existing conditions? </th>
+          <td>{{road.MotVehUse}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a ML3 road (or higher maintenance level) where the surface is native rather than gravel or paved and the motor vehicle class may not be compatible with the road surface?</th>
+          <td>{{road.MotVehSurf}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a road where the desired maintenance level is not the same as the current maintenance level, and the speed, volume, composition, and distribution of traffic on this road may not be compatible with existing conditions?</th>
+          <td>{{road.RoadTraffic}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a road that intersects major non-Forest Service roads such as country roads or state and federal highways?</th>
+          <td>{{road.RoadConnct}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a special use permit road?</th>
+          <td>{{road.RghtAccess}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with wilderness areas?</th>
+          <td>{{road.Wilderness}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with Colorado Roadless Areas? </th>
+          <td>{{road.RoadlessAr}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with Forest Service Research Natural Areas?</th>
+          <td>{{road.ResNatAr}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with National Scenic Trails?</th>
+          <td>{{road.NatScenTr}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with Gold Medal Waters? </th>
+          <td>{{road.GoldMedWat}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with Browns Canyon National Monument?</th>
+          <td>{{road.BrownsCany}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area intersect with wildland-urban interface areas?</th>
+          <td>{{road.WUIs}}</td>
+        </tr>
+        <tr>
+          <th>Is the route planned for obliteration following decommissioning?</th>
+          <td>{{road.FireOblit}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a ML3 road (or higher maintenance level), allowing for typical EMS services?</th>
+          <td>{{road.EMS}}</td>
+        </tr>
+        <tr>
+          <th>Is the route a road open to all vehicles (mixed use), with the potential for vehicle conflicts creating unsafe conditions?</th>
+          <td>{{road.VehConfl}}</td>
+        </tr>
+        <tr>
+          <th>Does the route or area comply with the Forest Plan Management Area?</th>
+          <td>{{road.FPMAcomp}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row mt-2">
+    <h3>Alternatives Comparison</h3>
+  </div>
+  <div class="row">
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Alt A</th>
+          <th scope="col">Alt B</th>
+          <th scope="col">Alt C</th>
+          <th scope="col">Alt D</th>
+          <th scope="col">Alt E</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Management Recommendation</th>
+          <td>{{road.AltAmgt1}}</td>
+          <td>{{road.AltB}}</td>
+          <td>{{road.AltC}}</td>
+          <td>{{road.AltD}}</td>
+          <td>{{road.AltE}}</td>
+        </tr>
+        <tr>
+          <th>Type of Management</th>
+          <td>Keep route classification as is</td>
+          <td>{{road.AltBmgt1}}</td>
+          <td>{{road.AltCmgt1}}</td>
+          <td>{{road.AltDmgt1}}</td>
+          <td>{{road.AltEmgt1}}</td>
+        </tr>
+        <tr>
+          <th>Route Class Management</th>
+          <td>{{road.AltAmgt2}}</td>
+          <td>{{road.AltBmgt2}}</td>
+          <td>{{road.AltCmgt2}}</td>
+          <td>{{road.AltDmgt2}}</td>
+          <td>{{road.AltEmgt2}}</td>
+        </tr>
+        <tr>
+          <th>Mitigation or Maintenance Management</th>
+          <td>{{road.AltAmgt3}}</td>
+          <td>{{road.AltBmgt3}}</td>
+          <td>{{road.AltCmgt3}}</td>
+          <td>{{road.AltDmgt3}}</td>
+          <td>{{road.AltEmgt3}}</td>
+        </tr>
+        <tr>
+          <th>Seasonal Closure Management</th>
+          <td>{{road.AltAmgtSea}}</td>
+          <td>{{road.AltBmgtSea}}</td>
+          <td>{{road.AltCmgtSea}}</td>
+          <td>{{road.AltDmgtSea}}</td>
+          <td>{{road.AltEmgtSea}}</td>
+        </tr>
+        <tr>
+          <th>Open to Public Motor Vehicle Use</th>
+          <td>{{road.AltAmgtPublic}}</td>
+          <td>{{road.AltBmgtPublic}}</td>
+          <td>{{road.AltCmgtPublic}}</td>
+          <td>{{road.AltDmgtPublic}}</td>
+          <td>{{road.AltEmgtPublic}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
