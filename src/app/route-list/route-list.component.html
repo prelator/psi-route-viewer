@@ -1,0 +1,45 @@
+<div class="container fullscreen">
+  <div class="row">
+    <div>
+      <h1 class="col mt-5">PSI Route List</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-4 form-group">
+      <input class="form-control form-control-lg" type="text" name="search" [(ngModel)]="searchText" autocomplete="off" placeholder="Search">
+    </div>
+
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Route Number</th>
+        <th scope="col">Name</th>
+        <th scope="col">Ranger District</th>
+        <th scope="col">Start MP</th>
+        <th scope="col">End MP</th>
+        <th scope="col">Length</th>
+        <th scope="col">Alt A Status</th>
+        <th scope="col">Alt B Action</th>
+        <th scope="col">Alt C Action</th>
+        <th scope="col">Alt D Action</th>
+        <th scope="col">Alt E Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let route of routes |filter:searchText">
+        <td>{{route.RouteNumber}}</td>
+        <td><a [routerLink]="['/profile', route.ID]">{{route.Name}}</a></td>
+        <td>{{route.MgtRngDist}}</td>
+        <td>{{route.TxtBMP}}</td>
+        <td>{{route.TxtEMP}}</td>
+        <td>{{route.TxtSegMi}}</td>
+        <td>{{route.AltAmgt2}}</td>
+        <td>{{route.AltB}}</td>
+        <td>{{route.AltC}}</td>
+        <td>{{route.AltD}}</td>
+        <td>{{route.AltE}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
