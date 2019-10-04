@@ -22,12 +22,12 @@
       <h3>Travel Analysis Scores</h3>
   </div>
   <div class="row mt-2">
-    <h5 class="ml-3">Combined Benefit/Risk Rating: {{road.TAPcombRat}}</h5>
+    <h5 class="ml-3">Combined Benefit/Risk Rating:  <strong>{{road.TAPcombRat}}</strong></h5>
   </div>
   <div class="row">
     <div class="col">
       <h4>Benefits</h4>
-      <table class="table table-striped">
+      <table class="table table-striped table-bordered">
         <thead class="thead-dark">
           <tr>
             <th scope="col">Category</th>
@@ -36,23 +36,23 @@
         </thead>
         <tbody>
           <tr>
-            <th>Recreational Use</th>
+            <th>Recreational Use Benefit</th>
             <td>{{road.TAPrecRat}}</td>
           </tr>
           <tr>
-            <th>Fire/Fuels Access</th>
+            <th>Fire/Fuels Access Benefit</th>
             <td>{{road.TAPfireRat}}</td>
           </tr>
           <tr>
-            <th>Timber Access</th>
+            <th>Timber Access Benefit</th>
             <td>{{road.TAPtimbRat}}</td>
           </tr>
           <tr>
-            <th>Special Use Access</th>
+            <th>Special Use Access Benefit</th>
             <td>{{road.TAPspecRat}}</td>
           </tr>
           <tr>
-            <th>Resource Management/Range Access</th>
+            <th>Resource Management/Range Access Benefit</th>
             <td>{{road.TAPrangRat}}</td>
           </tr>
         </tbody>
@@ -60,7 +60,7 @@
     </div>
     <div class="col">
       <h4>Risks</h4>
-      <table class="table table-striped">
+      <table class="table table-striped table-bordered">
         <thead class="thead-dark">
           <tr>
             <th scope="col">Category</th>
@@ -93,10 +93,77 @@
     </div>
   </div>
   <div class="row mt-2">
+    <h3>Alternatives Comparison</h3>
+  </div>
+  <div class="row">
+    <table class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Alt A</th>
+          <th scope="col">Alt B</th>
+          <th scope="col">Alt C</th>
+          <th scope="col">Alt D</th>
+          <th scope="col">Alt E</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Management Recommendation</th>
+          <td>{{road.AltAmgt1}}</td>
+          <td>{{road.AltB}}</td>
+          <td>{{road.AltC}}</td>
+          <td>{{road.AltD}}</td>
+          <td>{{road.AltE}}</td>
+        </tr>
+        <tr>
+          <th>Type of Management</th>
+          <td>Keep route classification as is</td>
+          <td>{{road.AltBmgt1}}</td>
+          <td>{{road.AltCmgt1}}</td>
+          <td>{{road.AltDmgt1}}</td>
+          <td>{{road.AltEmgt1}}</td>
+        </tr>
+        <tr>
+          <th>Route Class Management</th>
+          <td>{{road.AltAmgt2}}</td>
+          <td>{{road.AltBmgt2}}</td>
+          <td>{{road.AltCmgt2}}</td>
+          <td>{{road.AltDmgt2}}</td>
+          <td>{{road.AltEmgt2}}</td>
+        </tr>
+        <tr>
+          <th>Mitigation or Maintenance Management</th>
+          <td>{{road.AltAmgt3}}</td>
+          <td>{{road.AltBmgt3}}</td>
+          <td>{{road.AltCmgt3}}</td>
+          <td>{{road.AltDmgt3}}</td>
+          <td>{{road.AltEmgt3}}</td>
+        </tr>
+        <tr>
+          <th>Seasonal Closure Management</th>
+          <td>{{road.AltAmgtSea}}</td>
+          <td>{{road.AltBmgtSea}}</td>
+          <td>{{road.AltCmgtSea}}</td>
+          <td>{{road.AltDmgtSea}}</td>
+          <td>{{road.AltEmgtSea}}</td>
+        </tr>
+        <tr>
+          <th>Open to Public Motor Vehicle Use</th>
+          <td>{{road.AltAmgtPublic}}</td>
+          <td>{{road.AltBmgtPublic}}</td>
+          <td>{{road.AltCmgtPublic}}</td>
+          <td>{{road.AltDmgtPublic}}</td>
+          <td>{{road.AltEmgtPublic}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row mt-2">
       <h3>Screening Criteria</h3>
   </div>
   <div class="row">
-    <table class="table table-striped">
+    <table class="table table-striped table-bordered">
       <tbody>
         <tr>
           <th>Does the route or area intersect with impaired watersheds?</th>
@@ -209,73 +276,6 @@
         <tr>
           <th>Does the route or area comply with the Forest Plan Management Area?</th>
           <td>{{road.FPMAcomp}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="row mt-2">
-    <h3>Alternatives Comparison</h3>
-  </div>
-  <div class="row">
-    <table class="table table-striped">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">Alt A</th>
-          <th scope="col">Alt B</th>
-          <th scope="col">Alt C</th>
-          <th scope="col">Alt D</th>
-          <th scope="col">Alt E</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>Management Recommendation</th>
-          <td>{{road.AltAmgt1}}</td>
-          <td>{{road.AltB}}</td>
-          <td>{{road.AltC}}</td>
-          <td>{{road.AltD}}</td>
-          <td>{{road.AltE}}</td>
-        </tr>
-        <tr>
-          <th>Type of Management</th>
-          <td>Keep route classification as is</td>
-          <td>{{road.AltBmgt1}}</td>
-          <td>{{road.AltCmgt1}}</td>
-          <td>{{road.AltDmgt1}}</td>
-          <td>{{road.AltEmgt1}}</td>
-        </tr>
-        <tr>
-          <th>Route Class Management</th>
-          <td>{{road.AltAmgt2}}</td>
-          <td>{{road.AltBmgt2}}</td>
-          <td>{{road.AltCmgt2}}</td>
-          <td>{{road.AltDmgt2}}</td>
-          <td>{{road.AltEmgt2}}</td>
-        </tr>
-        <tr>
-          <th>Mitigation or Maintenance Management</th>
-          <td>{{road.AltAmgt3}}</td>
-          <td>{{road.AltBmgt3}}</td>
-          <td>{{road.AltCmgt3}}</td>
-          <td>{{road.AltDmgt3}}</td>
-          <td>{{road.AltEmgt3}}</td>
-        </tr>
-        <tr>
-          <th>Seasonal Closure Management</th>
-          <td>{{road.AltAmgtSea}}</td>
-          <td>{{road.AltBmgtSea}}</td>
-          <td>{{road.AltCmgtSea}}</td>
-          <td>{{road.AltDmgtSea}}</td>
-          <td>{{road.AltEmgtSea}}</td>
-        </tr>
-        <tr>
-          <th>Open to Public Motor Vehicle Use</th>
-          <td>{{road.AltAmgtPublic}}</td>
-          <td>{{road.AltBmgtPublic}}</td>
-          <td>{{road.AltCmgtPublic}}</td>
-          <td>{{road.AltDmgtPublic}}</td>
-          <td>{{road.AltEmgtPublic}}</td>
         </tr>
       </tbody>
     </table>

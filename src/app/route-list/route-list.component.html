@@ -1,7 +1,8 @@
 <div class="container fullscreen">
   <div class="row">
     <div>
-      <h1 class="col mt-5">PSI Route List</h1>
+      <h1 class="col mt-5">Pike San Isabel NF Travel Management Route List</h1>
+      <p>Click on the name of a route to view route details. Filter list by typing a name, route number, ranger district, or other route characteristic in the search box.</p>
     </div>
   </div>
 
@@ -10,7 +11,7 @@
       <input class="form-control form-control-lg" type="text" name="search" [(ngModel)]="searchText" autocomplete="off" placeholder="Search">
     </div>
 
-  <table class="table table-striped">
+  <table class="table table-striped table-bordered">
     <thead class="thead-dark">
       <tr>
         <th scope="col">Route Number</th>
@@ -29,7 +30,7 @@
     <tbody>
       <tr *ngFor="let route of routes |filter:searchText">
         <td>{{route.RouteNumber}}</td>
-        <td><a [routerLink]="['/profile', route.ID]">{{route.Name}}</a></td>
+        <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
         <td>{{route.MgtRngDist}}</td>
         <td>{{route.TxtBMP}}</td>
         <td>{{route.TxtEMP}}</td>

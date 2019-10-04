@@ -13,5 +13,5 @@ export class AppComponent {
 
   }
 
-  title = 'PSI Route Viewer';
+  title = 'PSI Travel Management Route Viewer';
 }
