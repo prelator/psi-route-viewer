@@ -17,6 +17,6 @@ export class AppComponent {
     this.navbarOpen = !this.navbarOpen;
   }
 
-  title = 'PSI Travel Management Route Viewer';
+  title = 'PSI Travel Route Viewer';
   navbarOpen = false;
 }
