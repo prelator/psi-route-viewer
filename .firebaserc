@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "psi-route-viewer": {
+      "hosting": {
+        "road-viewer": [
+          "psi-route-viewer"
+        ]
+      }
+    }
+  }
+}

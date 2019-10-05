@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "target": "road-viewer",
+      "public": "dist/road-viewer",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

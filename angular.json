@@ -122,8 +122,13 @@
               "devServerTarget": "road-viewer:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
+    }
+  },
   "defaultProject": "road-viewer"
 }
