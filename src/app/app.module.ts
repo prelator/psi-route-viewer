@@ -9,6 +9,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { RouteListComponent } from './route-list/route-list.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ResourcesComponent } from './resources/resources.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { ResourcesComponent } from './resources/resources.component';
     ProfileComponent,
     RouteListComponent,
     PageNotFoundComponent,
-    ResourcesComponent
+    ResourcesComponent,
+    AboutComponent
   ],
   imports: [
     RouterModule,
