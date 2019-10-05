@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ProfileComponent } from './profile/profile.component';
 import { RouteListComponent } from './route-list/route-list.component';
@@ -25,7 +26,8 @@ import { AboutComponent } from './about/about.component';
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    Ng2SearchPipeModule
+    Ng2SearchPipeModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

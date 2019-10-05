@@ -13,5 +13,10 @@ export class AppComponent {
 
   }
 
+  toggleNavbar () {
+    this.navbarOpen = !this.navbarOpen;
+  }
+
   title = 'PSI Travel Management Route Viewer';
+  navbarOpen = false;
 }
