@@ -17,4 +17,5 @@ export class RouteListComponent implements OnInit {
   }
 
   routes = this._dataService.getRoutes();
+  searchText;
 }
