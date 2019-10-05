@@ -1,6 +1,6 @@
 <div class="container mt-5">
   <div class="row">
-    <h1>Forest {{road.RouteType | titlecase}} {{road.RouteNumber}}: {{road.Name}}</h1>
+    <h2><strong>Forest {{road.RouteType | titlecase}} {{road.RouteNumber}}: {{road.Name}}</strong></h2>
   </div>
   <div class="row mt-2">
       <h3>Route Details</h3>
@@ -15,11 +15,11 @@
         <li><strong>Current Maintenance Level:</strong> {{road.CurrMTC}}</li>
         <li><strong>Desired Maintenance Level:</strong> {{road.DesiredMTC}}</li>
         <li><strong>Beginning Milepost:</strong> {{road.TxtBMP}} miles</li>
-        <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} miles</li>
-        <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} miles</li>
-        <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} miles</li>
-        <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} miles</li>
-        <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} miles</li>
+        <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} </li>
+        <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} <span *ngIf="road.TxtSegMi !=='No data'">miles</span></li>
+        <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} <span *ngIf="road.GIS_Miles !=='No data'">miles</span></li>
+        <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} <span *ngIf="road.TAPsegMile !=='No data'">miles</span></li>
+        <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} <span *ngIf="road.TAPsegMPs !=='No data'">miles</span></li>
         <li><strong>TAP Comments:</strong> {{road.TAPcmnts}}</li>
       </ul>
   </div>
@@ -101,7 +101,7 @@
     <h3>Alternatives Comparison</h3>
   </div>
   <div class="row">
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered table-responsive-xl">
       <thead class="thead-dark">
         <tr>
           <th scope="col"></th>

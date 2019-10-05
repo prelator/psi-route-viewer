@@ -8,13 +8,15 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ProfileComponent } from './profile/profile.component';
 import { RouteListComponent } from './route-list/route-list.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ResourcesComponent } from './resources/resources.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProfileComponent,
     RouteListComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ResourcesComponent
   ],
   imports: [
     RouterModule,
