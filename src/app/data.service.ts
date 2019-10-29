@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import actionRoutes from '../data/action.json';
 import oldActionRoutes from '../data/oldAction.json';
 import noActionRoutes from '../data/noAction.json';
+import seasonalData from '../data/seasonal.json';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,16 @@ export class DataService {
         combinedRoute['CurrMTC'] = "No data";;
         combinedRoute['DesiredMTC'] = "No data";;
         combinedRoute['County'] = "No data";
+      }
+
+      // Matching route in seasonal closure data
+      let seasonalRoute = seasonalData.find(seasRoute => {
+        return (actionRoute.RouteNumber === seasRoute.RouteNumber && actionRoute.Name === seasRoute.Name && actionRoute.MgtRngDist === seasRoute.MgtRngDist) && (actionRoute.TxtSegMi === seasRoute.TxtSegMi || actionRoute.TxtBMP === seasRoute.TxtBMP || actionRoute.TxtEMP === seasRoute.TxtEMP);
+      });
+      if (seasonalRoute) {
+        combinedRoute['AltCSeasonalDates'] = seasonalRoute.AltCSeasonalDates || 'N/A';
+      } else {
+        combinedRoute['AltCSeasonalDates'] = 'N/A';
       }
 
       return combinedRoute;

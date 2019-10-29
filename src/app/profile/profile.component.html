@@ -21,6 +21,7 @@
         <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} <span *ngIf="road.TAPsegMile !=='No data'">miles</span></li>
         <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} <span *ngIf="road.TAPsegMPs !=='No data'">miles</span></li>
         <li><strong>TAP Comments:</strong> {{road.TAPcmnts}}</li>
+        <li><strong>Alt C Proposed Seasonal Closure:</strong> {{road.AltCSeasonalDates}}</li>
       </ul>
   </div>
   <div class="row mt-2">
@@ -149,7 +150,7 @@
           <th>Seasonal Closure Management</th>
           <td>{{road.AltAmgtSea}}</td>
           <td>{{road.AltBmgtSea}}</td>
-          <td>{{road.AltCmgtSea}}</td>
+          <td>{{road.AltCmgtSea}} <span *ngIf="road.AltCSeasonalDates !=='N/A'">({{road.AltCSeasonalDates}})</span></td>
           <td>{{road.AltDmgtSea}}</td>
           <td>{{road.AltEmgtSea}}</td>
         </tr>
