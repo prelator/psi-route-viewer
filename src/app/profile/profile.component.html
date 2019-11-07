@@ -7,22 +7,22 @@
   </div>
   <div class="row">
     <ul>
-        <li><strong>Managing Ranger District:</strong> {{road.MgtRngDist}}</li>
-        <li><strong>Administrative Ranger District:</strong> {{road.AdmRngDist}}</li>
-        <li><strong>County:</strong> {{road.County}}</li>
-        <li><strong>Seasonal Closure Designation:</strong> {{road.Seasonal}}</li>
-        <li><strong>Road Surface:</strong> {{road.TAPsurfTy}}</li>
-        <li><strong>Current Maintenance Level:</strong> {{road.CurrMTC}}</li>
-        <li><strong>Desired Maintenance Level:</strong> {{road.DesiredMTC}}</li>
-        <li><strong>Beginning Milepost:</strong> {{road.TxtBMP}} miles</li>
-        <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} </li>
-        <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} <span *ngIf="road.TxtSegMi !=='No data'">miles</span></li>
-        <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} <span *ngIf="road.GIS_Miles !=='No data'">miles</span></li>
-        <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} <span *ngIf="road.TAPsegMile !=='No data'">miles</span></li>
-        <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} <span *ngIf="road.TAPsegMPs !=='No data'">miles</span></li>
-        <li><strong>TAP Comments:</strong> {{road.TAPcmnts}}</li>
-        <li><strong>Alt C Proposed Seasonal Closure:</strong> {{road.AltCSeasonalDates}}</li>
-      </ul>
+      <li><strong>Managing Ranger District:</strong> {{road.MgtRngDist}}</li>
+      <li><strong>Administrative Ranger District:</strong> {{road.AdmRngDist}}</li>
+      <li><strong>County:</strong> {{road.County}}</li>
+      <li><strong>Seasonal Closure Designation:</strong> {{road.Seasonal}}</li>
+      <li><strong>Road Surface:</strong> {{road.TAPsurfTy}}</li>
+      <li><strong>Current Maintenance Level:</strong> {{road.CurrMTC}}</li>
+      <li><strong>Desired Maintenance Level:</strong> {{road.DesiredMTC}}</li>
+      <li><strong>Beginning Milepost:</strong> {{road.TxtBMP}} miles</li>
+      <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} </li>
+      <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} <span *ngIf="road.TxtSegMi !=='No data'">miles</span></li>
+      <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} <span *ngIf="road.GIS_Miles !=='No data'">miles</span></li>
+      <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} <span *ngIf="road.TAPsegMile !=='No data'">miles</span></li>
+      <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} <span *ngIf="road.TAPsegMPs !=='No data'">miles</span></li>
+      <li><strong>TAP Comments:</strong> {{road.TAPcmnts}}</li>
+      <li><strong>Alt C Proposed Seasonal Closure:</strong> {{road.AltCSeasonalDates}}</li>
+    </ul>
   </div>
   <div class="row mt-2">
       <h3>Travel Analysis Process (TAP) Scores</h3>
@@ -162,6 +162,46 @@
           <td>{{road.AltDmgtPublic}}</td>
           <td>{{road.AltEmgtPublic}}</td>
         </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row mt-2" *ngIf="road.WildlifeData.length > 0">
+    <h3>Species & Management Area Data (Rocky Mountain Wild)</h3>
+    <p>Sourced from the spreadsheets in the Colorado Mountain Club's comment, which was created using Rocky Mountain Wild's Assessment of Biological Impact screening tool. More information about the tool is available <a href="http://rockymountainwild.org/abi">here</a>. This website includes information about NatureServe codes shown for animals and plants.</p>
+    <table class="table table-striped table-bordered table-responsive-xl">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Species</th>
+          <th scope="col">Class</th>
+          <th scope="col">Area Type</th>
+          <th scope="col">Percent Overlap</th>
+          <th scope="col">Overlap Length (miles)</th>
+          <th scope="col">Source</th>
+          <th scope="col">Date</th>
+          <th scope="col">RMW Species Rank</th>
+          <th scope="col">NatureServe Global Satus</th>
+          <th scope="col">NatureServe Colorado Status</th>
+          <th scope="col">FWS ESA Status</th>
+          <th scope="col">CPW Conservation Status</th>
+          <th scope="col">USFS Sensitive Species</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let species of road.WildlifeData">
+            <td>{{species.CommonName}} ({{species.ScientificName}})</td>
+            <td>{{species.Class}}</td>
+            <td>{{species.ValueName}}</td>
+            <td>{{species.PercentOverlap}}</td>
+            <td>{{species.OverlapLength}}</td>
+            <td>{{species.Source}}</td>
+            <td>{{species.Date}}</td>
+            <td>{{species.RMWSpeciesRank}}</td>
+            <td>{{species.NatureServeGlobal}}</td>
+            <td>{{species.NatureServeColorado}}</td>
+            <td>{{species.FWSESAStatus}}</td>
+            <td>{{species.CPWConservationStatus}}</td>
+            <td>{{species.USFSSensitiveSpecies}}</td>
+          </tr>
       </tbody>
     </table>
   </div>
