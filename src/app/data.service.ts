@@ -157,4 +157,24 @@ export class DataService {
     });
     return foundRoute;
   }
+
+  public getAltClosures(alt) {
+    const routes = this.getRoutes();
+    const statusParam = `Alt${alt.toUpperCase()}mgt1`;
+    const publicParam = `Alt${alt.toUpperCase()}mgtPublic`;
+    let matchingRoutes = [];
+    let closedMiles = 0;
+    routes.forEach(route => {
+      if (route[statusParam] === 'NFS subtraction' ||
+        (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[publicParam] !== route['AltAmgtPublic'])) {
+        matchingRoutes.push(route);
+        closedMiles += route['TxtSegMi'] || route['GIS_Miles'] || 0;
+      }
+    });
+    return {
+      closedRoutes: matchingRoutes,
+      numClosedSegments: matchingRoutes.length,
+      closedMiles: closedMiles.toFixed(1)
+    };
+  }
 }
