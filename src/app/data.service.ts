@@ -32,6 +32,7 @@ const NSStateRanks = {
 })
 export class DataService {
   private combinedRoutes = [];
+  private cachedClosures = {};
 
   constructor () {
 
@@ -72,13 +73,13 @@ export class DataService {
         combinedRoute['TAPcmnts'] = oldMatchingRoute.TAPcmnts || 'No data';;
         combinedRoute['CurrMTC'] = oldMatchingRoute.CurrMTC || 'No data';;
         combinedRoute['DesiredMTC'] = oldMatchingRoute.DesiredMTC || 'No data';;
-        combinedRoute['County'] = oldMatchingRoute.County || 'No data';
+        combinedRoute['County'] = oldMatchingRoute.County || 'UNKNOWN';
       } else {
         combinedRoute['TAPsurfTy'] = 'No data';
         combinedRoute['TAPcmnts'] = 'No data';;
         combinedRoute['CurrMTC'] = 'No data';;
         combinedRoute['DesiredMTC'] = 'No data';;
-        combinedRoute['County'] = 'No data';
+        combinedRoute['County'] = 'UNKNOWN';
       }
 
       // Matching route in seasonal closure data
@@ -159,22 +160,95 @@ export class DataService {
   }
 
   public getAltClosures(alt) {
+    if (this.cachedClosures[alt]) {
+      return this.cachedClosures[alt];
+    }
+
+    let result = {
+      altName: alt,
+      closedRoutes: [],
+      numClosedSegments: 0,
+      closedMiles: '',
+      counties: {},
+      districts: {}
+    };
+
     const routes = this.getRoutes();
     const statusParam = `Alt${alt.toUpperCase()}mgt1`;
     const publicParam = `Alt${alt.toUpperCase()}mgtPublic`;
-    let matchingRoutes = [];
     let closedMiles = 0;
+
     routes.forEach(route => {
       if (route[statusParam] === 'NFS subtraction' ||
         (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[publicParam] !== route['AltAmgtPublic'])) {
-        matchingRoutes.push(route);
+        result.closedRoutes.push(route);
         closedMiles += route['TxtSegMi'] || route['GIS_Miles'] || 0;
+
+        const county = route['County'] && route['County'].replace('CO - ', '');
+        if (county) {
+          if (!result.counties.hasOwnProperty(county)) {
+            result.counties[county] = route['TxtSegMi'] || route['GIS_Miles'] || 0;
+          } else {
+            result.counties[county] += route['TxtSegMi'] || route['GIS_Miles'] || 0;
+          }
+        }
+
+        const district = route['MgtRngDist'];
+        if (district) {
+          if (!result.districts.hasOwnProperty(district)) {
+            result.districts[district] = route['TxtSegMi'] || route['GIS_Miles'] || 0;
+          } else {
+            result.districts[district] += route['TxtSegMi'] || route['GIS_Miles'] || 0;
+          }
+        }
       }
     });
-    return {
-      closedRoutes: matchingRoutes,
-      numClosedSegments: matchingRoutes.length,
-      closedMiles: closedMiles.toFixed(1)
-    };
+
+    result.numClosedSegments = result.closedRoutes.length;
+    result.closedMiles = closedMiles.toFixed(1);
+
+    for (const county in result.counties) {
+      result.counties[county] = result.counties[county].toFixed(1);
+    }
+
+    for (const distr in result.districts) {
+      result.districts[distr] = result.districts[distr].toFixed(1);
+    }
+
+    this.cachedClosures[alt] = result;
+    return result;
+  }
+
+  public getCountyClosures() {
+    const closures = this.cachedClosures;
+    let result = {};
+    for (let alt in closures) {
+      for (let county in closures[alt].counties) {
+        if (!result[county]) {
+          result[county] = {
+            B: '0.0',
+            C: '0.0',
+            D: '0.0',
+            E: '0.0'
+          };
+        }
+        result[county][alt] = closures[alt].counties[county] || '0.0';
+      }
+    }
+    return result;
+  }
+
+  public getDistrictClosures() {
+    const closures = this.cachedClosures;
+    let result = {};
+    for (let alt in closures) {
+      for (let distr in closures[alt].districts) {
+        if (!result[distr]) {
+          result[distr] = {};
+        }
+        result[distr][alt] = closures[alt].districts[distr] || '0.0';
+      }
+    }
+    return result;
   }
 }
