@@ -1,0 +1,86 @@
+<div class="container fullscreen">
+  <div class="row">
+    <div class="col mt-5">
+      <h2><strong>Pike San Isabel NF Travel Management Alternatives Summary</strong></h2>
+      <p>Click on the routes tab to view a list of all affected routes.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <h3>Routes Closed by Alternative</h3>
+  </div>
+  <div class="row">
+    <div class="col-md-5">
+      <table class="table table-striped table-bordered table-responsive-xl">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Total Closures (miles closed)</th>
+            <th scope="col">Alt B</th>
+            <th scope="col">Alt C</th>
+            <th scope="col">Alt D</th>
+            <th scope="col">Alt E</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th></th>
+            <td>{{altBClosures.closedMiles}}</td>
+            <td>{{altCClosures.closedMiles}}</td>
+            <td>{{altDClosures.closedMiles}}</td>
+            <td>{{altEClosures.closedMiles}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-5">
+      <table class="table table-striped table-bordered table-responsive-xl">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Ranger Districts (miles closed)</th>
+            <th scope="col">Alt B</th>
+            <th scope="col">Alt C</th>
+            <th scope="col">Alt D</th>
+            <th scope="col">Alt E</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let district of districtClosures | keyvalue">
+            <th>{{district.key}}</th>
+            <td>{{district.value.B}}</td>
+            <td>{{district.value.C}}</td>
+            <td>{{district.value.D}}</td>
+            <td>{{district.value.E}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-5">
+      <table class="table table-striped table-bordered table-responsive-xl">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Counties (miles closed)</th>
+            <th scope="col">Alt B</th>
+            <th scope="col">Alt C</th>
+            <th scope="col">Alt D</th>
+            <th scope="col">Alt E</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let county of countyClosures | keyvalue">
+            <th>{{county.key}}</th>
+            <td>{{county.value.B}}</td>
+            <td>{{county.value.C}}</td>
+            <td>{{county.value.D}}</td>
+            <td>{{county.value.E}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

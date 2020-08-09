@@ -18,10 +18,4 @@ export class RouteListComponent implements OnInit {
 
   searchText;
   routes = this._dataService.getRoutes();
-  altBClosures = this._dataService.getAltClosures('B');
-  altCClosures = this._dataService.getAltClosures('C');
-  altDClosures = this._dataService.getAltClosures('D');
-  altEClosures = this._dataService.getAltClosures('E');
-  countyClosures = this._dataService.getCountyClosures();
-  districtClosures = this._dataService.getDistrictClosures();
 }

@@ -11,6 +11,7 @@ import { RouteListComponent } from './route-list/route-list.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ResourcesComponent } from './resources/resources.component';
 import { AboutComponent } from './about/about.component';
+import { SummaryComponent } from './summary/summary.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { AboutComponent } from './about/about.component';
     RouteListComponent,
     PageNotFoundComponent,
     ResourcesComponent,
-    AboutComponent
+    AboutComponent,
+    SummaryComponent
   ],
   imports: [
     RouterModule,
