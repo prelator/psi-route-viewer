@@ -14,11 +14,17 @@ export class SummaryComponent implements OnInit {
 
   }
 
+  altATotals = this._dataService.getAltTotals('A');
+  altBTotals = this._dataService.getAltTotals('B');
+  altCTotals = this._dataService.getAltTotals('C');
+  altDTotals = this._dataService.getAltTotals('D');
+  altETotals = this._dataService.getAltTotals('E');
+
   altBClosures = this._dataService.getAltClosures('B');
   altCClosures = this._dataService.getAltClosures('C');
   altDClosures = this._dataService.getAltClosures('D');
   altEClosures = this._dataService.getAltClosures('E');
+
   countyClosures = this._dataService.getCountyClosures();
   districtClosures = this._dataService.getDistrictClosures();
-
 }

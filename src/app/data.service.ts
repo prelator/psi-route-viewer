@@ -179,26 +179,27 @@ export class DataService {
     let closedMiles = 0;
 
     routes.forEach(route => {
+      let segMiles = typeof route['TxtSegMi'] === 'number' ? route['TxtSegMi'] : route['GIS_Miles'] || 0;
       if (route[statusParam] === 'NFS subtraction' ||
-        (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[publicParam] !== route['AltAmgtPublic'])) {
+        (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[publicParam] !== 'No data' && route[publicParam] !== route['AltAmgtPublic'])) {
         result.closedRoutes.push(route);
-        closedMiles += route['TxtSegMi'] || route['GIS_Miles'] || 0;
+        closedMiles += segMiles;
 
         const county = route['County'] && route['County'].replace('CO - ', '');
         if (county) {
           if (!result.counties.hasOwnProperty(county)) {
-            result.counties[county] = route['TxtSegMi'] || route['GIS_Miles'] || 0;
+            result.counties[county] = segMiles;
           } else {
-            result.counties[county] += route['TxtSegMi'] || route['GIS_Miles'] || 0;
+            result.counties[county] += segMiles;
           }
         }
 
         const district = route['MgtRngDist'];
         if (district) {
           if (!result.districts.hasOwnProperty(district)) {
-            result.districts[district] = route['TxtSegMi'] || route['GIS_Miles'] || 0;
+            result.districts[district] = segMiles;
           } else {
-            result.districts[district] += route['TxtSegMi'] || route['GIS_Miles'] || 0;
+            result.districts[district] += segMiles;
           }
         }
       }
@@ -249,6 +250,49 @@ export class DataService {
         result[distr][alt] = closures[alt].districts[distr] || '0.0';
       }
     }
+    return result;
+  }
+
+  public getAltTotals(alt) {
+    const routes = alt === 'A' ? noActionRoutes : this.getRoutes();
+    const publicParam = `Alt${alt.toUpperCase()}mgtPublic`;
+
+    let result = {
+      altName: alt,
+      openMiles: '',
+      closedMiles: '',
+      totalMiles: '',
+      percentageOpen: '',
+      percentageClosed: '',
+      openRoutes: [],
+      closedRoutes: []
+    };
+
+    let openMiles = 0;
+    let closedMiles = 0;
+    let totalMiles = 0;
+
+    routes.forEach(route => {
+      let segMiles = typeof route['TxtSegMi'] === 'number' ? route['TxtSegMi'] : route['GIS_Miles'] || 0;
+      totalMiles += segMiles;
+
+      if (route[publicParam] === 'Open to public motor vehicle use') {
+        openMiles += segMiles;
+        result.openRoutes.push(route);
+      } else if (route[publicParam] !== 'No data') {
+        closedMiles += segMiles;
+        result.closedRoutes.push(route);
+      }
+    });
+
+    result.openMiles = openMiles.toFixed(1);
+    result.closedMiles = closedMiles.toFixed(1);
+    result.totalMiles = totalMiles.toFixed(1);
+
+    let percentageOpen = openMiles / totalMiles * 100;
+    let percentageClosed = closedMiles / totalMiles * 100;
+    result.percentageOpen = `${percentageOpen.toFixed(1)}%`;
+    result.percentageClosed = `${percentageClosed.toFixed(1)}%`;
     return result;
   }
 }
