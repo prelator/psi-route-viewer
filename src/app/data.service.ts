@@ -174,14 +174,21 @@ export class DataService {
     };
 
     const routes = this.getRoutes();
-    const statusParam = `Alt${alt.toUpperCase()}mgt1`;
-    const publicParam = `Alt${alt.toUpperCase()}mgtPublic`;
+    const altStatusParam = `Alt${alt.toUpperCase()}mgt1`;
+    const altPublicParam = `Alt${alt.toUpperCase()}mgtPublic`;
     let closedMiles = 0;
 
     routes.forEach(route => {
       let segMiles = typeof route['TxtSegMi'] === 'number' ? route['TxtSegMi'] : route['GIS_Miles'] || 0;
-      if (route[statusParam] === 'NFS subtraction' ||
-        (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[publicParam] !== 'No data' && route[publicParam] !== route['AltAmgtPublic'])) {
+      let routeIsClosed  = false;
+
+      if (route['AltAmgtPublic'] !== 'No data' && route[altPublicParam] !== 'No data') {
+        routeIsClosed = (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[altPublicParam] !== 'Open to public motor vehicle use');
+      } else {
+          routeIsClosed = route[altStatusParam] === 'NFS subtraction';
+      }
+
+      if (routeIsClosed) {
         result.closedRoutes.push(route);
         closedMiles += segMiles;
 
@@ -274,14 +281,17 @@ export class DataService {
 
     routes.forEach(route => {
       let segMiles = typeof route['TxtSegMi'] === 'number' ? route['TxtSegMi'] : route['GIS_Miles'] || 0;
-      totalMiles += segMiles;
 
-      if (route[publicParam] === 'Open to public motor vehicle use') {
-        openMiles += segMiles;
-        result.openRoutes.push(route);
-      } else if (route[publicParam] !== 'No data') {
-        closedMiles += segMiles;
-        result.closedRoutes.push(route);
+      if (route[publicParam] !== 'No data') {
+        totalMiles += segMiles;
+
+        if (route[publicParam] === 'Open to public motor vehicle use') {
+          openMiles += segMiles;
+          result.openRoutes.push(route);
+        } else {
+          closedMiles += segMiles;
+          result.closedRoutes.push(route);
+        }
       }
     });
 
