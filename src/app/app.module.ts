@@ -12,6 +12,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { ResourcesComponent } from './resources/resources.component';
 import { AboutComponent } from './about/about.component';
 import { SummaryComponent } from './summary/summary.component';
+import { PreferredDetailComponent } from './preferred-detail/preferred-detail.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SummaryComponent } from './summary/summary.component';
     PageNotFoundComponent,
     ResourcesComponent,
     AboutComponent,
-    SummaryComponent
+    SummaryComponent,
+    PreferredDetailComponent
   ],
   imports: [
     RouterModule,

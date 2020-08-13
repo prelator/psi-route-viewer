@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SummaryComponent } from './summary/summary.component';
 import { RouteListComponent } from './route-list/route-list.component';
 import { ProfileComponent } from './profile/profile.component';
+import { PreferredDetailComponent } from './preferred-detail/preferred-detail.component';
 import { ResourcesComponent } from './resources/resources.component';
 import { AboutComponent } from './about/about.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'summary', component:  SummaryComponent},
   { path: 'routes', component:  RouteListComponent},
   { path: 'routes/profile/:id', component:  ProfileComponent},
+  { path: 'preferred', component:  PreferredDetailComponent},
   { path: 'resources', component:  ResourcesComponent},
   { path: 'about', component:  AboutComponent},
   { path: '',
