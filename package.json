@@ -1,5 +1,5 @@
 {
-  "name": "PSI Travel Route Viewer",
+  "name": "psi-route-viewer",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
