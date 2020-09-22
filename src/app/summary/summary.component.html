@@ -7,7 +7,74 @@
   </div>
 
   <div class="row">
-    <h3>Total Routes Open/Closed</h3>
+    <h3>Current MVUM Route System Miles</h3>
+  </div>
+  <div class="row">
+    <div class="col-md-5">
+      <table class="table table-striped table-bordered table-responsive-xl">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Ranger District</th>
+            <th scope="col">Roads</th>
+            <th scope="col">Trails</th>
+            <th scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let district of mvumRoutes.districts | keyvalue">
+            <th>{{district.key}}</th>
+            <td>{{district.value.totalRoads}}</td>
+            <td>{{district.value.totalTrails}}</td>
+            <td>{{district.value.totalMiles}}</td>
+          </tr>
+          <tr>
+            <th>All Districts</th>
+            <td>{{mvumRoutes.roadMilesStr}}</td>
+            <td>{{mvumRoutes.trailMilesStr}}</td>
+            <td>{{mvumRoutes.systemMilesStr}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <h3>Alt C Open Route System Miles</h3>
+  </div>
+  <div class="row">
+    <p>(Uses current road/trail type, not considering conversions)</p>
+  </div>
+  <div class="row">
+    <div class="col-md-5">
+      <table class="table table-striped table-bordered table-responsive-xl">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Ranger District</th>
+            <th scope="col">Roads</th>
+            <th scope="col">Trails</th>
+            <th scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let district of altCTotals.districts | keyvalue">
+            <th>{{district.key}}</th>
+            <td>{{district.value.totalRoads}}</td>
+            <td>{{district.value.totalTrails}}</td>
+            <td>{{district.value.totalMiles}}</td>
+          </tr>
+          <tr>
+            <th>All Districts</th>
+            <td>{{altCTotals.openRoads}}</td>
+            <td>{{altCTotals.openTrails}}</td>
+            <td>{{altCTotals.openMiles}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <h3>Alternatives Total Routes Open/Closed</h3>
   </div>
   <div class="row">
     <div class="col-md-5">

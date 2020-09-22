@@ -4,6 +4,8 @@ import oldActionRoutes from '../data/oldAction.json';
 import noActionRoutes from '../data/noAction.json';
 import seasonalData from '../data/seasonal.json';
 import wildlifeData from '../data/wildlife.json';
+import mvumRoads from '../data/mvumRoads.json';
+import mvumTrails from '../data/mvumTrails.json';
 
 const NSGlobalRanks = {
   GX: 'Presumed Extinct',
@@ -33,6 +35,16 @@ const NSStateRanks = {
 export class DataService {
   private combinedRoutes = [];
   private cachedClosures = {};
+  private mvumRoutes = {
+    populated: false,
+    roadMiles: 0,
+    roadMilesStr: '',
+    trailMiles: 0,
+    trailMilesStr: '',
+    systemMiles: 0,
+    systemMilesStr: '',
+    districts: {}
+  };
 
   constructor () {
 
@@ -266,26 +278,48 @@ export class DataService {
 
     let result = {
       altName: alt,
+      openRoads: '',
+      openTrails: '',
       openMiles: '',
       closedMiles: '',
       totalMiles: '',
       percentageOpen: '',
       percentageClosed: '',
       openRoutes: [],
-      closedRoutes: []
+      closedRoutes: [],
+      districts: {}
     };
-
+    let openRoads = 0;
+    let openTrails = 0;
     let openMiles = 0;
     let closedMiles = 0;
     let totalMiles = 0;
 
     routes.forEach(route => {
       let segMiles = typeof route['TxtSegMi'] === 'number' ? route['TxtSegMi'] : route['GIS_Miles'] || 0;
+      let district = route['MgtRngDist'];
 
       if (route[publicParam] !== 'No data') {
         totalMiles += segMiles;
 
         if (route[publicParam] === 'Open to public motor vehicle use') {
+          if (!result.districts[district]) {
+            result.districts[district] = {
+              totalRoads: 0,
+              totalTrails: 0,
+              totalMiles: 0
+            };
+          }
+
+          if (route['RouteType'] === 'ROAD') {
+            openRoads += segMiles;
+            result.districts[district].totalRoads += segMiles;
+          } else {
+            openTrails += segMiles;
+            result.districts[district].totalTrails += segMiles;
+          }
+
+          result.districts[district].totalMiles += segMiles;
           openMiles += segMiles;
           result.openRoutes.push(route);
         } else {
@@ -295,6 +329,15 @@ export class DataService {
       }
     });
 
+    // Shorten district miles
+    for (let district in result.districts) {
+      result.districts[district].totalRoads = result.districts[district].totalRoads.toFixed(1);
+      result.districts[district].totalTrails = result.districts[district].totalTrails.toFixed(1);
+      result.districts[district].totalMiles = result.districts[district].totalMiles.toFixed(1);
+    }
+
+    result.openRoads = openRoads.toFixed(1);
+    result.openTrails = openTrails.toFixed(1);
     result.openMiles = openMiles.toFixed(1);
     result.closedMiles = closedMiles.toFixed(1);
     result.totalMiles = totalMiles.toFixed(1);
@@ -304,5 +347,56 @@ export class DataService {
     result.percentageOpen = `${percentageOpen.toFixed(1)}%`;
     result.percentageClosed = `${percentageClosed.toFixed(1)}%`;
     return result;
+  }
+
+  private populateMvumRoute(route, type) {
+    let district = route['DISTRICTNAME'] || 'Unknown';
+    if (district !== 'Cimarron Ranger District' && district !== 'Comanche Ranger District') {
+      if (!this.mvumRoutes.districts[district]) {
+        this.mvumRoutes.districts[district] = {
+          totalRoads: 0,
+          totalTrails: 0,
+          totalMiles: 0
+        };
+      }
+      if (type === 'road') {
+        this.mvumRoutes.districts[district].totalRoads += route['SEG_LENGTH'];
+        this.mvumRoutes.roadMiles += route['SEG_LENGTH'];
+      } else {
+        this.mvumRoutes.districts[district].totalTrails += route['SEG_LENGTH'];
+        this.mvumRoutes.trailMiles += route['SEG_LENGTH'];
+      }
+      this.mvumRoutes.districts[district].totalMiles += route['SEG_LENGTH'];
+      this.mvumRoutes.systemMiles += route['SEG_LENGTH'];
+    }
+  }
+
+  public getMvumRoutes() {
+    if (!this.mvumRoutes.populated) {
+      mvumRoads.forEach(road => {
+        this.populateMvumRoute(road, 'road');
+      });
+
+      mvumTrails.forEach(trail => {
+        this.populateMvumRoute(trail, 'trail');
+      });
+
+      // Shorten district miles
+      for (let district in this.mvumRoutes.districts) {
+        this.mvumRoutes.districts[district].totalRoads = this.mvumRoutes.districts[district].totalRoads.toFixed(1);
+        this.mvumRoutes.districts[district].totalTrails = this.mvumRoutes.districts[district].totalTrails.toFixed(1);
+        this.mvumRoutes.districts[district].totalMiles = this.mvumRoutes.districts[district].totalMiles.toFixed(1);
+      }
+
+      // Shorten total system miles
+      this.mvumRoutes.roadMilesStr = this.mvumRoutes.roadMiles.toFixed(1);
+      this.mvumRoutes.trailMilesStr = this.mvumRoutes.trailMiles.toFixed(1);
+      this.mvumRoutes.systemMilesStr = this.mvumRoutes.systemMiles.toFixed(1);
+
+      // Set populated
+      this.mvumRoutes.populated = true;
+    }
+
+    return this.mvumRoutes;
   }
 }

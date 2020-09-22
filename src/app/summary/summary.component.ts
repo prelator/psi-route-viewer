@@ -27,4 +27,6 @@ export class SummaryComponent implements OnInit {
 
   countyClosures = this._dataService.getCountyClosures();
   districtClosures = this._dataService.getDistrictClosures();
+
+  mvumRoutes = this._dataService.getMvumRoutes();
 }
