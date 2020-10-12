@@ -7,6 +7,7 @@
   </div>
   <div class="row">
     <ul>
+      <li><strong>Current MVUM Status:</strong> {{road.MVUMdescription}}</li>
       <li><strong>Managing Ranger District:</strong> {{road.MgtRngDist}}</li>
       <li><strong>Administrative Ranger District:</strong> {{road.AdmRngDist}}</li>
       <li><strong>County:</strong> {{road.County}}</li>
@@ -16,10 +17,10 @@
       <li><strong>Desired Maintenance Level:</strong> {{road.DesiredMTC}}</li>
       <li><strong>Beginning Milepost:</strong> {{road.TxtBMP}} miles</li>
       <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} </li>
-      <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} <span *ngIf="road.TxtSegMi !=='No data'">miles</span></li>
-      <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} <span *ngIf="road.GIS_Miles !=='No data'">miles</span></li>
-      <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} <span *ngIf="road.TAPsegMile !=='No data'">miles</span></li>
-      <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} <span *ngIf="road.TAPsegMPs !=='No data'">miles</span></li>
+      <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} <span *ngIf="road.TxtSegMi">miles</span></li>
+      <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} <span *ngIf="road.GIS_Miles">miles</span></li>
+      <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} <span *ngIf="road.TAPsegMile">miles</span></li>
+      <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} <span *ngIf="road.TAPsegMPs">miles</span></li>
       <li><strong>TAP Comments:</strong> {{road.TAPcmnts}}</li>
       <li><strong>Alt C Proposed Seasonal Closure:</strong> {{road.AltCSeasonalDates}}</li>
     </ul>

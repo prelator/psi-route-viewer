@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import actionRoutes from '../data/action.json';
 import oldActionRoutes from '../data/oldAction.json';
 import noActionRoutes from '../data/noAction.json';
-import seasonalData from '../data/seasonal.json';
 import wildlifeData from '../data/wildlife.json';
 import mvumRoads from '../data/mvumRoads.json';
 import mvumTrails from '../data/mvumTrails.json';
+import gisData from '../data/gisData.json';
+import seasonalData from '../data/seasonal.json';
 
 const NSGlobalRanks = {
   GX: 'Presumed Extinct',
@@ -54,14 +55,16 @@ export class DataService {
     var routes = actionRoutes.map(actionRoute => {
       let combinedRoute : {[k: string]: any} = actionRoute;
       combinedRoute['WildlifeData'] = [];
+      combinedRoute['UniqIDGIS'] = null;
+      combinedRoute['OBJECTID_1'] = null;
+      combinedRoute['MVUMdescription'] = 'No data';
+      combinedRoute['AltCSeasonalDates'] = 'No data';
 
       // Matching no-action route
       let matchingRoute = noActionRoutes.find(noActionRoute => {
         return noActionRoute.RouteNumber === actionRoute.RouteNumber && noActionRoute.Name === actionRoute.Name && noActionRoute.MgtRngDist === actionRoute.MgtRngDist && (noActionRoute.GIS_Miles === actionRoute.TxtSegMi || noActionRoute.GIS_Miles === actionRoute.GIS_Miles);
       });
-      matchingRoute = matchingRoute || noActionRoutes.find(noActionRoute => {
-        return noActionRoute.RouteNumber === actionRoute.RouteNumber && noActionRoute.Name === actionRoute.Name && noActionRoute.MgtRngDist === actionRoute.MgtRngDist;
-      });
+
       if (matchingRoute) {
         combinedRoute['AltAmgt1'] = matchingRoute.AltAmgt1;
         combinedRoute['AltAmgt2'] = matchingRoute.AltAmgt2;
@@ -99,9 +102,8 @@ export class DataService {
         return (actionRoute.RouteNumber === seasRoute.RouteNumber && actionRoute.Name === seasRoute.Name && actionRoute.MgtRngDist === seasRoute.MgtRngDist) && (actionRoute.TxtSegMi === seasRoute.TxtSegMi || actionRoute.TxtBMP === seasRoute.TxtBMP || actionRoute.TxtEMP === seasRoute.TxtEMP);
       });
       if (seasonalRoute) {
-        combinedRoute['AltCSeasonalDates'] = seasonalRoute.AltCSeasonalDates || 'N/A';
-      } else {
-        combinedRoute['AltCSeasonalDates'] = 'N/A';
+        combinedRoute['AltCSeasonalDates'] = seasonalRoute.AltCSeasonalDates || 'No data';
+        combinedRoute['County'] = seasonalRoute.County;
       }
 
       return combinedRoute;
@@ -109,6 +111,7 @@ export class DataService {
 
     this.combinedRoutes = routes;
     this.addWildlifeData();
+    this.addGISData();
   }
 
   private addWildlifeData () {
@@ -156,6 +159,31 @@ export class DataService {
     });
   }
 
+  private addGISData() {
+    gisData.forEach(gisRoute => {
+      let matchingRoute = this.combinedRoutes.find(masterRoute => {
+        let masterRouteGISMiles: number = parseFloat(<string> masterRoute.GIS_Miles);
+        let gisRouteGISMiles: number = parseFloat(<string> gisRoute.GIS_Miles);
+        let masterRouteLength: string = masterRouteGISMiles.toFixed(2);
+        let gisRouteLength: string = gisRouteGISMiles.toFixed(2);
+
+        return (masterRoute.RouteNumber === gisRoute.RouteNumber && masterRoute.AdmRngDist === gisRoute.AdmRngDist) && ((masterRoute.TxtBMP === gisRoute.TxtBMP && masterRoute.TxtEMP === gisRoute.TxtEMP) || (parseFloat(masterRouteLength) === parseFloat(gisRouteLength)));
+      });
+      if (matchingRoute) {
+        matchingRoute['UniqIDGIS'] = gisRoute.UniqIDGIS;
+        matchingRoute['OBJECTID_1'] = gisRoute.OBJECTID_1;
+        matchingRoute['MVUMdescription'] = gisRoute.MVUMdescription;
+        matchingRoute['AltCSeasonalDates'] = gisRoute.AltCseaDates;
+        if (matchingRoute.AltAmgt2 === 'No data' && gisRoute.MVUMdescription !== 'No data') {
+          matchingRoute.AltAmgt2 = gisRoute.MVUMdescription;
+        }
+        if (gisRoute.MVUMdescription === 'No data' && matchingRoute.AltAmgt2 !== 'No data') {
+          matchingRoute.MVUMdescription = matchingRoute.AltAmgt2;
+        } 
+      }
+    });
+  }
+
   public getRoutes() {
     if (this.combinedRoutes.length === 0) {
       this.populateRoutes();
@@ -196,8 +224,10 @@ export class DataService {
 
       if (route['AltAmgtPublic'] !== 'No data' && route[altPublicParam] !== 'No data') {
         routeIsClosed = (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[altPublicParam] !== 'Open to public motor vehicle use');
+      } else if (route.MVUMdescription.includes('open') && route[altPublicParam] !== 'No data') {
+        routeIsClosed = route[altPublicParam] !== 'Open to public motor vehicle use';
       } else {
-          routeIsClosed = route[altStatusParam] === 'NFS subtraction';
+        routeIsClosed = route[altStatusParam] === 'NFS subtraction';
       }
 
       if (routeIsClosed) {

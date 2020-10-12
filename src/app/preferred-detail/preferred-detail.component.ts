@@ -14,7 +14,15 @@ export class PreferredDetailComponent implements OnInit {
   }
 
   highValueClosedRoutes = this._dataService.getAltTotals('C').closedRoutes.filter(route => {
-    return route.TAPrecRat === 'H' || route.TAPrecRat === 'M';
+    return (route.TxtSegMi > 0.1 && (route.TAPrecRat === 'H' || route.TAPrecRat === 'M'));
+  }).sort((a, b) => {
+    if (a.TAPrecRat === 'H' && b.TAPrecRat !== 'H') {
+      return -1;
+    } else if (b.TAPrecRat === 'H' && a.TAPrecRat !== "H") {
+      return 1;
+    } else {
+      return 0;
+    }
   });
   newClosedRoutes = this._dataService.getAltClosures('C').closedRoutes;
 }
