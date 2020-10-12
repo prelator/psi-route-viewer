@@ -6,10 +6,10 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="mvumRoutes">
     <h3>Current MVUM Route System Miles</h3>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="mvumRoutes">
     <div class="col-md-5">
       <table class="table table-striped table-bordered table-responsive-xl">
         <thead class="thead-dark">
@@ -38,13 +38,13 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="altCTotals">
     <h3>Alt C Open Route System Miles</h3>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="altCTotals">
     <p>(Uses current road/trail type, not considering conversions)</p>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="altCTotals">
     <div class="col-md-5">
       <table class="table table-striped table-bordered table-responsive-xl">
         <thead class="thead-dark">
@@ -73,10 +73,10 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="altATotals && altBTotals && altCTotals && altDTotals && altETotals">
     <h3>Alternatives Total Routes Open/Closed</h3>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="altATotals && altBTotals && altCTotals && altDTotals && altETotals">
     <div class="col-md-5">
       <table class="table table-striped table-bordered table-responsive-xl">
         <thead class="thead-dark">
@@ -135,10 +135,10 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="altBClosures && altCClosures && altDClosures && altEClosures">
     <h3>New Routes Closed by Alternative (currently open)</h3>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="altBClosures && altCClosures && altDClosures && altEClosures">
     <div class="col-md-5">
       <table class="table table-striped table-bordered table-responsive-xl">
         <thead class="thead-dark">
@@ -163,7 +163,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="districtClosures">
     <div class="col-md-5">
       <table class="table table-striped table-bordered table-responsive-xl">
         <thead class="thead-dark">
@@ -188,7 +188,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" *ngIf="countyClosures">
     <div class="col-md-5">
       <table class="table table-striped table-bordered table-responsive-xl">
         <thead class="thead-dark">
