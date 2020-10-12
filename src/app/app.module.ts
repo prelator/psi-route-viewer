@@ -1,5 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
@@ -28,6 +29,7 @@ import { PreferredDetailComponent } from './preferred-detail/preferred-detail.co
   imports: [
     RouterModule,
     BrowserModule,
+    HttpClientModule,
     FormsModule,
     AppRoutingModule,
     Ng2SearchPipeModule,

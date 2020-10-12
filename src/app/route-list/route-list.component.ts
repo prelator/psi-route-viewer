@@ -12,10 +12,10 @@ export class RouteListComponent implements OnInit {
 
   }
 
-  ngOnInit () {
-
-  }
-
+  routes;
   searchText;
-  routes = this._dataService.getRoutes();
+
+  async ngOnInit () {
+    this.routes = await this._dataService.getRoutes();
+  }
 }

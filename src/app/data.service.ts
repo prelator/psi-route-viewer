@@ -1,4 +1,9 @@
 import { Injectable } from '@angular/core';
+import { get, set, clear } from 'idb-keyval';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+
 import actionRoutes from '../data/action.json';
 import oldActionRoutes from '../data/oldAction.json';
 import noActionRoutes from '../data/noAction.json';
@@ -7,6 +12,10 @@ import mvumRoads from '../data/mvumRoads.json';
 import mvumTrails from '../data/mvumTrails.json';
 import gisData from '../data/gisData.json';
 import seasonalData from '../data/seasonal.json';
+
+const dbVersion = 1;
+
+const altList = ['A', 'B','C', 'D', 'E'];
 
 const NSGlobalRanks = {
   GX: 'Presumed Extinct',
@@ -35,7 +44,7 @@ const NSStateRanks = {
 })
 export class DataService {
   private combinedRoutes = [];
-  private cachedClosures = {};
+  private cachedClosures = null;
   private mvumRoutes = {
     populated: false,
     roadMiles: 0,
@@ -47,9 +56,7 @@ export class DataService {
     districts: {}
   };
 
-  constructor () {
-
-  }
+  constructor (private http: HttpClient) { }
 
   private populateRoutes() {
     var routes = actionRoutes.map(actionRoute => {
@@ -112,6 +119,15 @@ export class DataService {
     this.combinedRoutes = routes;
     this.addWildlifeData();
     this.addGISData();
+
+    // Storage
+    try {
+      clear();
+      set('dbVersion', dbVersion);
+      set('combinedRoutes', this.combinedRoutes);
+    } catch (err) {
+      console.error(`IDB storage error: ${err}`);
+    }
   }
 
   private addWildlifeData () {
@@ -179,31 +195,70 @@ export class DataService {
         }
         if (gisRoute.MVUMdescription === 'No data' && matchingRoute.AltAmgt2 !== 'No data') {
           matchingRoute.MVUMdescription = matchingRoute.AltAmgt2;
-        } 
+        }
       }
     });
   }
 
-  public getRoutes() {
+  public async getRoutes() {
+    if (this.combinedRoutes.length === 0) {
+      const storedVersion = await get('dbVersion');
+      if (storedVersion && storedVersion === dbVersion) {
+        const storedRoutes: any = await get('combinedRoutes');
+        if (storedRoutes && storedRoutes.length > 0) {
+          this.combinedRoutes = storedRoutes;
+        }
+      }
+    }
+
     if (this.combinedRoutes.length === 0) {
       this.populateRoutes();
     }
     return this.combinedRoutes;
   }
 
-  public getRouteById(id) {
-    let routes = this.getRoutes();
+  public async getRouteById(id) {
+    let routes = await this.getRoutes();
     let foundRoute = routes.find(route => {
       return route.ID === parseInt(id);
     });
     return foundRoute;
   }
 
-  public getAltClosures(alt) {
-    if (this.cachedClosures[alt]) {
-      return this.cachedClosures[alt];
+  public async getAllClosures() {
+    if (!this.cachedClosures) {
+      const storedClosures: any = await get('cachedClosures');
+      if (storedClosures) {
+        this.cachedClosures = storedClosures;
+      }
     }
 
+    if (this.cachedClosures) {
+      return this.cachedClosures;
+    } else {
+      await this.populateClosures();
+      return this.cachedClosures;
+    }
+  }
+
+  public async getAltClosures(alt) {
+    const closures = await this.getAllClosures();
+    return closures[alt];
+  }
+
+  private async populateClosures() {
+    const routes = await this.getRoutes();
+    this.cachedClosures = {};
+
+    altList.forEach(alt => {
+      this.populateAltClosures(alt, routes);
+    });
+
+    set('cachedClosures', this.cachedClosures);
+    return this.cachedClosures;
+  }
+
+  private populateAltClosures(alt, routes) {
     let result = {
       altName: alt,
       closedRoutes: [],
@@ -213,7 +268,6 @@ export class DataService {
       districts: {}
     };
 
-    const routes = this.getRoutes();
     const altStatusParam = `Alt${alt.toUpperCase()}mgt1`;
     const altPublicParam = `Alt${alt.toUpperCase()}mgtPublic`;
     let closedMiles = 0;
@@ -269,8 +323,8 @@ export class DataService {
     return result;
   }
 
-  public getCountyClosures() {
-    const closures = this.cachedClosures;
+  public async getCountyClosures() {
+    const closures = await this.getAllClosures();
     let result = {};
     for (let alt in closures) {
       for (let county in closures[alt].counties) {
@@ -288,8 +342,8 @@ export class DataService {
     return result;
   }
 
-  public getDistrictClosures() {
-    const closures = this.cachedClosures;
+  public async getDistrictClosures() {
+    const closures = await this.getAllClosures();
     let result = {};
     for (let alt in closures) {
       for (let distr in closures[alt].districts) {
@@ -302,8 +356,8 @@ export class DataService {
     return result;
   }
 
-  public getAltTotals(alt) {
-    const routes = alt === 'A' ? noActionRoutes : this.getRoutes();
+  public async getAltTotals(alt) {
+    const routes = alt === 'A' ? noActionRoutes : await this.getRoutes();
     const publicParam = `Alt${alt.toUpperCase()}mgtPublic`;
 
     let result = {
@@ -401,7 +455,14 @@ export class DataService {
     }
   }
 
-  public getMvumRoutes() {
+  public async getMvumRoutes() {
+    if (!this.mvumRoutes.populated) {
+      const storedRoutes: any = await get('mvumRoutes');
+      if (storedRoutes && storedRoutes.populated) {
+        this.mvumRoutes = storedRoutes;
+      }
+    }
+
     if (!this.mvumRoutes.populated) {
       mvumRoads.forEach(road => {
         this.populateMvumRoute(road, 'road');
@@ -425,6 +486,7 @@ export class DataService {
 
       // Set populated
       this.mvumRoutes.populated = true;
+      set('mvumRoutes', this.mvumRoutes);
     }
 
     return this.mvumRoutes;

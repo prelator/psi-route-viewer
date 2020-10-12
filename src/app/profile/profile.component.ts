@@ -18,8 +18,8 @@ export class ProfileComponent implements OnInit {
     private dataService: DataService ) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.road = this.dataService.getRouteById(params.get('id'));
+    this.route.paramMap.subscribe(async params => {
+      this.road = await this.dataService.getRouteById(params.get('id'));
       console.log(this.road);
     });
   }
