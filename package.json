@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng serve",
-    "build": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build",
-    "deploy": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng deploy",
+    "start": "ng serve",
+    "build": "ng build",
+    "deploy": "ng deploy",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

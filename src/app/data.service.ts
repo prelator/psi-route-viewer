@@ -4,15 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-import actionRoutes from '../data/action.json';
-import oldActionRoutes from '../data/oldAction.json';
-import noActionRoutes from '../data/noAction.json';
-import wildlifeData from '../data/wildlife.json';
-import mvumRoads from '../data/mvumRoads.json';
-import mvumTrails from '../data/mvumTrails.json';
-import gisData from '../data/gisData.json';
-import seasonalData from '../data/seasonal.json';
-
 const dbVersion = 1;
 
 const altList = ['A', 'B','C', 'D', 'E'];
@@ -44,6 +35,7 @@ const NSStateRanks = {
 })
 export class DataService {
   private combinedRoutes = [];
+  private noActionRoutes = [];
   private cachedClosures = null;
   private mvumRoutes = {
     populated: false,
@@ -58,7 +50,12 @@ export class DataService {
 
   constructor (private http: HttpClient) { }
 
-  private populateRoutes() {
+  private async populateRoutes() {
+    const actionRoutes = await this.http.get<any[]>('assets/data/action.json').toPromise();
+    const noActionRoutes = this.noActionRoutes = await this.http.get<any[]>('assets/data/noAction.json').toPromise();
+    const oldActionRoutes = await this.http.get<any[]>('assets/data/oldAction.json').toPromise();
+    const seasonalData = await this.http.get<any[]>('assets/data/seasonal.json').toPromise();
+
     var routes = actionRoutes.map(actionRoute => {
       let combinedRoute : {[k: string]: any} = actionRoute;
       combinedRoute['WildlifeData'] = [];
@@ -117,8 +114,8 @@ export class DataService {
     });
 
     this.combinedRoutes = routes;
-    this.addWildlifeData();
-    this.addGISData();
+    await this.addWildlifeData();
+    await this.addGISData();
 
     // Storage
     try {
@@ -130,7 +127,9 @@ export class DataService {
     }
   }
 
-  private addWildlifeData () {
+  private async addWildlifeData () {
+    const wildlifeData = await this.http.get<any[]>('assets/data/wildlife.json').toPromise();
+
     wildlifeData.forEach(wildRoute => {
       if (wildRoute.AreaName) {
         wildRoute.ValueName += ` - ${wildRoute.AreaName}`;
@@ -175,7 +174,9 @@ export class DataService {
     });
   }
 
-  private addGISData() {
+  private async addGISData() {
+    const gisData = await this.http.get<any[]>('assets/data/gisData.json').toPromise();
+
     gisData.forEach(gisRoute => {
       let matchingRoute = this.combinedRoutes.find(masterRoute => {
         let masterRouteGISMiles: number = parseFloat(<string> masterRoute.GIS_Miles);
@@ -212,7 +213,7 @@ export class DataService {
     }
 
     if (this.combinedRoutes.length === 0) {
-      this.populateRoutes();
+      await this.populateRoutes();
     }
     return this.combinedRoutes;
   }
@@ -357,7 +358,8 @@ export class DataService {
   }
 
   public async getAltTotals(alt) {
-    const routes = alt === 'A' ? noActionRoutes : await this.getRoutes();
+    const combinedRoutes = await this.getRoutes();
+    const routes = alt === 'A' ? this.noActionRoutes : combinedRoutes;
     const publicParam = `Alt${alt.toUpperCase()}mgtPublic`;
 
     let result = {
@@ -433,7 +435,7 @@ export class DataService {
     return result;
   }
 
-  private populateMvumRoute(route, type) {
+  private addMvumRoute(route, type) {
     let district = route['DISTRICTNAME'] || 'Unknown';
     if (district !== 'Cimarron Ranger District' && district !== 'Comanche Ranger District') {
       if (!this.mvumRoutes.districts[district]) {
@@ -455,6 +457,34 @@ export class DataService {
     }
   }
 
+  private async populateMvumRoutes() {
+    const mvumRoads = await this.http.get<any[]>('assets/data/mvumRoads.json').toPromise();
+    mvumRoads.forEach(road => {
+      this.addMvumRoute(road, 'road');
+    });
+
+    const mvumTrails = await this.http.get<any[]>('assets/data/mvumTrails.json').toPromise();
+    mvumTrails.forEach(trail => {
+      this.addMvumRoute(trail, 'trail');
+    });
+
+    // Shorten district miles
+    for (let district in this.mvumRoutes.districts) {
+      this.mvumRoutes.districts[district].totalRoads = this.mvumRoutes.districts[district].totalRoads.toFixed(1);
+      this.mvumRoutes.districts[district].totalTrails = this.mvumRoutes.districts[district].totalTrails.toFixed(1);
+      this.mvumRoutes.districts[district].totalMiles = this.mvumRoutes.districts[district].totalMiles.toFixed(1);
+    }
+
+    // Shorten total system miles
+    this.mvumRoutes.roadMilesStr = this.mvumRoutes.roadMiles.toFixed(1);
+    this.mvumRoutes.trailMilesStr = this.mvumRoutes.trailMiles.toFixed(1);
+    this.mvumRoutes.systemMilesStr = this.mvumRoutes.systemMiles.toFixed(1);
+
+    // Set populated
+    this.mvumRoutes.populated = true;
+    set('mvumRoutes', this.mvumRoutes);
+  }
+
   public async getMvumRoutes() {
     if (!this.mvumRoutes.populated) {
       const storedRoutes: any = await get('mvumRoutes');
@@ -464,29 +494,7 @@ export class DataService {
     }
 
     if (!this.mvumRoutes.populated) {
-      mvumRoads.forEach(road => {
-        this.populateMvumRoute(road, 'road');
-      });
-
-      mvumTrails.forEach(trail => {
-        this.populateMvumRoute(trail, 'trail');
-      });
-
-      // Shorten district miles
-      for (let district in this.mvumRoutes.districts) {
-        this.mvumRoutes.districts[district].totalRoads = this.mvumRoutes.districts[district].totalRoads.toFixed(1);
-        this.mvumRoutes.districts[district].totalTrails = this.mvumRoutes.districts[district].totalTrails.toFixed(1);
-        this.mvumRoutes.districts[district].totalMiles = this.mvumRoutes.districts[district].totalMiles.toFixed(1);
-      }
-
-      // Shorten total system miles
-      this.mvumRoutes.roadMilesStr = this.mvumRoutes.roadMiles.toFixed(1);
-      this.mvumRoutes.trailMilesStr = this.mvumRoutes.trailMiles.toFixed(1);
-      this.mvumRoutes.systemMilesStr = this.mvumRoutes.systemMiles.toFixed(1);
-
-      // Set populated
-      this.mvumRoutes.populated = true;
-      set('mvumRoutes', this.mvumRoutes);
+      await this.populateMvumRoutes();
     }
 
     return this.mvumRoutes;

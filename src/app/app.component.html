@@ -7,20 +7,20 @@
     </button>
     <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/summary">Summary</a>
+        <li class="nav-item">
+          <a  class="nav-link" [routerLink]="['/summary']" routerLinkActive="active">Summary</a>
           </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/routes">Routes</a>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/routes']" routerLinkActive="active">Routes</a>
         </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="/preferred">Alt C Detail</a>
+        <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/preferred']" routerLinkActive="active">Alt C Detail</a>
         </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="/resources">Resources</a>
+        <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/resources']" routerLinkActive="active">Resources</a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="/about">About
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/about']" routerLinkActive="active">About
           </a>
         </li>
       </ul>
