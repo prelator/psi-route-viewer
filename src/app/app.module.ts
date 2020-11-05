@@ -14,6 +14,7 @@ import { ResourcesComponent } from './resources/resources.component';
 import { AboutComponent } from './about/about.component';
 import { SummaryComponent } from './summary/summary.component';
 import { PreferredDetailComponent } from './preferred-detail/preferred-detail.component';
+import { MapsComponent } from './maps/maps.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PreferredDetailComponent } from './preferred-detail/preferred-detail.co
     ResourcesComponent,
     AboutComponent,
     SummaryComponent,
-    PreferredDetailComponent
+    PreferredDetailComponent,
+    MapsComponent
   ],
   imports: [
     RouterModule,
