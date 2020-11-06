@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-const dbVersion = 1;
+const dbVersion = 2;
 
 const altList = ['A', 'B','C', 'D', 'E'];
 
@@ -122,6 +122,7 @@ export class DataService {
       clear();
       set('dbVersion', dbVersion);
       set('combinedRoutes', this.combinedRoutes);
+      set('noActionRoutes', this.noActionRoutes);
     } catch (err) {
       console.error(`IDB storage error: ${err}`);
     }
@@ -206,8 +207,10 @@ export class DataService {
       const storedVersion = await get('dbVersion');
       if (storedVersion && storedVersion === dbVersion) {
         const storedRoutes: any = await get('combinedRoutes');
+        const noActionRoutes: any = await get('noActionRoutes');
         if (storedRoutes && storedRoutes.length > 0) {
           this.combinedRoutes = storedRoutes;
+          this.noActionRoutes = noActionRoutes;
         }
       }
     }
