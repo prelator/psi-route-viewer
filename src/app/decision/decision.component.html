@@ -28,7 +28,7 @@
         <tr *ngFor="let route of changedClosed">
           <td>{{route.RouteNumber}}</td>
           <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
-          <td>{{route.MgtRngDist}}</td>
+          <td>{{route.AdmRngDist}}</td>
           <td>{{route.TxtBMP}}</td>
           <td>{{route.TxtEMP}}</td>
           <td>{{route.TxtSegMi}}</td>
@@ -64,7 +64,7 @@
         <tr *ngFor="let route of changedOpen">
           <td>{{route.RouteNumber}}</td>
           <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
-          <td>{{route.MgtRngDist}}</td>
+          <td>{{route.AdmRngDist}}</td>
           <td>{{route.TxtBMP}}</td>
           <td>{{route.TxtEMP}}</td>
           <td>{{route.TxtSegMi}}</td>
@@ -77,8 +77,48 @@
     </table>
   </div>
 
+  <div class="row" *ngIf="newClosedHighValueRoutes">
+    <h3>New High Value Routes Closed (currently open)</h3>
+  </div>
+  <div class="row" *ngIf="newClosedHighValueRoutes">
+    <p>Only includes routes longer than 0.1 miles. Shorter routes are mostly being converted to parking areas.</p>
+  </div>
+  <div class="row" *ngIf="newClosedHighValueRoutes">
+    <table class="table table-striped table-bordered table-responsive-xl">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Route Number</th>
+          <th scope="col">Name</th>
+          <th scope="col">Ranger District</th>
+          <th scope="col">Start MP</th>
+          <th scope="col">End MP</th>
+          <th scope="col">Length</th>
+          <th scope="col">Current Status</th>
+          <th scope="col">Decision Action</th>
+          <th scope="col">Rec Benefit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let route of newClosedHighValueRoutes">
+          <td>{{route.RouteNumber}}</td>
+          <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
+          <td>{{route.AdmRngDist}}</td>
+          <td>{{route.TxtBMP}}</td>
+          <td>{{route.TxtEMP}}</td>
+          <td>{{route.TxtSegMi}}</td>
+          <td>{{route.AltAmgt2}}</td>
+          <td>{{route.AltF}}</td>
+          <td>{{route.TAPrecRat}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="row" *ngIf="highValueClosedRoutes">
-    <h3>High Value Routes Closed (currently open and closed)</h3>
+    <h3>All High Value Routes Closed (both currently open and closed)</h3>
+  </div>
+  <div class="row" *ngIf="highValueClosedRoutes">
+    <p>Only includes routes longer than 0.1 miles. Shorter routes are mostly being converted to parking areas.</p>
   </div>
   <div class="row" *ngIf="highValueClosedRoutes">
     <table class="table table-striped table-bordered table-responsive-xl">
@@ -99,7 +139,7 @@
         <tr *ngFor="let route of highValueClosedRoutes">
           <td>{{route.RouteNumber}}</td>
           <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
-          <td>{{route.MgtRngDist}}</td>
+          <td>{{route.AdmRngDist}}</td>
           <td>{{route.TxtBMP}}</td>
           <td>{{route.TxtEMP}}</td>
           <td>{{route.TxtSegMi}}</td>
@@ -133,13 +173,52 @@
         <tr *ngFor="let route of newClosedRoutes">
           <td>{{route.RouteNumber}}</td>
           <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
-          <td>{{route.MgtRngDist}}</td>
+          <td>{{route.AdmRngDist}}</td>
           <td>{{route.TxtBMP}}</td>
           <td>{{route.TxtEMP}}</td>
           <td>{{route.TxtSegMi}}</td>
           <td>{{route.AltAmgt2}}</td>
           <td>{{route.AltF}}</td>
           <td>{{route.TAPrecRat}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row" *ngIf="closedConflict">
+    <h3>New Routes Closed Possibly Because of Conflict</h3>
+  </div>
+  <div class="row" *ngIf="highValueClosedRoutes">
+    <p>Currently open routes longer than 0.1 miles where the Quiet Use Conflict screening criterion is Yes.</p>
+  </div>
+  <div class="row" *ngIf="closedConflict">
+    <table class="table table-striped table-bordered table-responsive-xl">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Route Number</th>
+          <th scope="col">Name</th>
+          <th scope="col">Ranger District</th>
+          <th scope="col">Start MP</th>
+          <th scope="col">End MP</th>
+          <th scope="col">Length</th>
+          <th scope="col">Current Status</th>
+          <th scope="col">Decision Action</th>
+          <th scope="col">Rec Benefit</th>
+          <th scope="col">Quiet Use Conflict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let route of closedConflict">
+          <td>{{route.RouteNumber}}</td>
+          <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
+          <td>{{route.AdmRngDist}}</td>
+          <td>{{route.TxtBMP}}</td>
+          <td>{{route.TxtEMP}}</td>
+          <td>{{route.TxtSegMi}}</td>
+          <td>{{route.AltAmgt2}}</td>
+          <td>{{route.AltF}}</td>
+          <td>{{route.TAPrecRat}}</td>
+          <td>{{route.QuietUse}}</td>
         </tr>
       </tbody>
     </table>

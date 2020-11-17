@@ -13,16 +13,50 @@ export class DecisionComponent implements OnInit {
 
   highValueClosedRoutes;
   newClosedRoutes;
+  newClosedHighValueRoutes;
   changedClosed;
   changedOpen;
+  closedConflict;
 
   async ngOnInit() {
     const allRoutes = await this._dataService.getRoutes();
     const altTotals = await this._dataService.getAltTotals('F');
     const altF = await this._dataService.getAltClosures('F');
-    
-    this.newClosedRoutes = altF.closedRoutes;
-    
+
+    this.newClosedRoutes = altF.closedRoutes.sort((a, b) => {
+      if (a.AdmRngDist < b.AdmRngDist) {
+        return -1;
+      } else if (a.AdmRngDist > b.AdmRngDist) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    this.closedConflict = altF.closedRoutes.filter(route => {
+      return route.TxtSegMi > 0.1 && route.QuietUse === 'Yes';
+    }).sort((a, b) => {
+      if (a.AdmRngDist < b.AdmRngDist) {
+        return -1;
+      } else if (a.AdmRngDist > b.AdmRngDist) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    this.newClosedHighValueRoutes = this.newClosedRoutes.filter(route => {
+      return (route.TxtSegMi > 0.1 && (route.TAPrecRat === 'H' || route.TAPrecRat === 'M'));
+    }).sort((a, b) => {
+      if (a.TAPrecRat === 'H' && b.TAPrecRat !== 'H') {
+        return -1;
+      } else if (b.TAPrecRat === 'H' && a.TAPrecRat !== "H") {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
     this.highValueClosedRoutes = altTotals.closedRoutes.filter(route => {
       return (route.TxtSegMi > 0.1 && (route.TAPrecRat === 'H' || route.TAPrecRat === 'M'));
     }).sort((a, b) => {
@@ -37,10 +71,26 @@ export class DecisionComponent implements OnInit {
 
     this.changedClosed = allRoutes.filter(route => {
     	return route.AltFmgtPublic !== 'No data' && (route.AltCmgtPublic === 'No data' || route.AltCmgtPublic === 'Open to public motor vehicle use') && route.AltCmgtPublic !== route.AltFmgtPublic && route.AltFmgtPublic !== 'Open to public motor vehicle use';
+    }).sort((a, b) => {
+      if (a.AdmRngDist < b.AdmRngDist) {
+        return -1;
+      } else if (a.AdmRngDist > b.AdmRngDist) {
+        return 1;
+      } else {
+        return 0;
+      }
     });
 
     this.changedOpen = allRoutes.filter(route => {
     	return route.AltCmgtPublic !== route.AltFmgtPublic && route.AltFmgtPublic === 'Open to public motor vehicle use';
+    }).sort((a, b) => {
+      if (a.AdmRngDist < b.AdmRngDist) {
+        return -1;
+      } else if (a.AdmRngDist > b.AdmRngDist) {
+        return 1;
+      } else {
+        return 0;
+      }
     });
   }
 

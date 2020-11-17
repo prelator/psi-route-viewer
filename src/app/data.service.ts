@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-const dbVersion = 3;
+const dbVersion = 4;
 
 const altList = ['A', 'B','C', 'D', 'E', 'F'];
 
@@ -125,7 +125,7 @@ export class DataService {
     await this.addGISData();
     await this.addFEISData();
     await this.addWildlifeData();
-    
+
     // Storage
     try {
       clear();
@@ -216,7 +216,7 @@ export class DataService {
 
     feisActionRoutes.forEach(feisRoute => {
       // Add in fields FEIS routes don't have.
-      feisRoute['AltAmgt1'] = 'No data';
+      feisRoute['AltAmgt1'] = 'Keep as is';
       feisRoute['AltAmgt2'] = 'No data';
       feisRoute['AltAmgt3'] = 'No data';
       feisRoute['AltAmgtSea'] = 'No data';
@@ -240,12 +240,14 @@ export class DataService {
       let gisMatchingRoute = feisGISRoutes.find(gisRoute => {
         return gisRoute.RouteNumber === feisRoute.RouteNumber && gisRoute.Name === feisRoute.Name && gisRoute.BMP === feisRoute.TxtBMP && gisRoute.EMP === feisRoute.TxtEMP;
       });
-      
+
       if (gisMatchingRoute) {
         feisRoute['MVUMdescription'] = gisMatchingRoute.MVUMdescription || 'No data';
         feisRoute['AltFseaDates'] = gisMatchingRoute.AltFseaDates || 'No data';
         feisRoute['AltFmod'] = gisMatchingRoute.AltFmod;
         feisRoute['AltF2020ModNo'] = gisMatchingRoute.AltF2020ModNo;
+        feisRoute.AltAmgt2 = feisRoute.MVUMdescription;
+        feisRoute.AltAmgtPublic = feisRoute.MVUMdescription !== 'No data' && feisRoute.MVUMdescription.toLowerCase().includes('open') ? 'Open to public motor vehicle use' : 'Closed to public motor vehicle use';
       } else {
         feisRoute['MVUMdescription'] = 'No data';
         feisRoute['AltFseaDates'] = 'No data';
@@ -257,7 +259,7 @@ export class DataService {
       let matchingRoute = this.combinedRoutes.find(masterRoute => {
         return masterRoute.RouteNumber === feisRoute.RouteNumber && masterRoute.Name === feisRoute.Name && masterRoute.TxtBMP === feisRoute.TxtBMP && masterRoute.TxtEMP === feisRoute.TxtEMP;
       });
-      
+
       if (matchingRoute) {
         matchingRoute['AltF'] = feisRoute.AltF;
         matchingRoute['AltFmgt1'] = feisRoute.AltFmgt1;

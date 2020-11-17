@@ -27,7 +27,7 @@
         <tr *ngFor="let route of highValueClosedRoutes">
           <td>{{route.RouteNumber}}</td>
           <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
-          <td>{{route.MgtRngDist}}</td>
+          <td>{{route.AdmRngDist}}</td>
           <td>{{route.TxtBMP}}</td>
           <td>{{route.TxtEMP}}</td>
           <td>{{route.TxtSegMi}}</td>
@@ -61,7 +61,7 @@
         <tr *ngFor="let route of newClosedRoutes">
           <td>{{route.RouteNumber}}</td>
           <td><a [routerLink]="['/routes/profile', route.ID]">{{route.Name}}</a></td>
-          <td>{{route.MgtRngDist}}</td>
+          <td>{{route.AdmRngDist}}</td>
           <td>{{route.TxtBMP}}</td>
           <td>{{route.TxtEMP}}</td>
           <td>{{route.TxtSegMi}}</td>
