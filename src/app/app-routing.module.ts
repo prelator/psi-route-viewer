@@ -5,6 +5,7 @@ import { MapsComponent } from './maps/maps.component';
 import { RouteListComponent } from './route-list/route-list.component';
 import { ProfileComponent } from './profile/profile.component';
 import { PreferredDetailComponent } from './preferred-detail/preferred-detail.component';
+import { DecisionComponent } from './decision/decision.component';
 import { ResourcesComponent } from './resources/resources.component';
 import { AboutComponent } from './about/about.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'routes/profile/:id', component:  ProfileComponent},
   { path: 'maps', component:  MapsComponent},
   { path: 'preferred', component:  PreferredDetailComponent},
+  { path: 'decision', component:  DecisionComponent},
   { path: 'resources', component:  ResourcesComponent},
   { path: 'about', component:  AboutComponent},
   { path: '',

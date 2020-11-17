@@ -4,9 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-const dbVersion = 2;
+const dbVersion = 3;
 
-const altList = ['A', 'B','C', 'D', 'E'];
+const altList = ['A', 'B','C', 'D', 'E', 'F'];
 
 const NSGlobalRanks = {
   GX: 'Presumed Extinct',
@@ -60,13 +60,21 @@ export class DataService {
       let combinedRoute : {[k: string]: any} = actionRoute;
       combinedRoute['WildlifeData'] = [];
       combinedRoute['UniqIDGIS'] = null;
-      combinedRoute['OBJECTID_1'] = null;
       combinedRoute['MVUMdescription'] = 'No data';
       combinedRoute['AltCSeasonalDates'] = 'No data';
+      combinedRoute['AltF'] = 'No data';
+      combinedRoute['AltFmgt1'] = 'No Data';
+      combinedRoute['AltFmgt2'] = 'No data';
+      combinedRoute['AltFmgt3'] = 'No data';
+      combinedRoute['AltFmgtSea'] = 'No data';
+      combinedRoute['AltFmgtPublic'] = 'No data';
+      combinedRoute['AltFseaDates'] = 'No data';
+      combinedRoute['AltFmod'] = '';
+      combinedRoute['AltF2020ModNo'] = '';
 
       // Matching no-action route
       let matchingRoute = noActionRoutes.find(noActionRoute => {
-        return noActionRoute.RouteNumber === actionRoute.RouteNumber && noActionRoute.Name === actionRoute.Name && noActionRoute.MgtRngDist === actionRoute.MgtRngDist && (noActionRoute.GIS_Miles === actionRoute.TxtSegMi || noActionRoute.GIS_Miles === actionRoute.GIS_Miles);
+        return noActionRoute.RouteNumber === actionRoute.RouteNumber && noActionRoute.Name === actionRoute.Name && (noActionRoute.GIS_Miles === actionRoute.TxtSegMi || noActionRoute.GIS_Miles === actionRoute.GIS_Miles);
       });
 
       if (matchingRoute) {
@@ -85,7 +93,7 @@ export class DataService {
 
       // Matching old action route
       let oldMatchingRoute = oldActionRoutes.find(oldActionRoute => {
-        return oldActionRoute.RouteNumber === actionRoute.RouteNumber && oldActionRoute.NAME === actionRoute.Name && oldActionRoute.MgtRngDist === actionRoute.MgtRngDist && oldActionRoute.TxtSegMils === actionRoute.TxtSegMi;
+        return oldActionRoute.RouteNumber === actionRoute.RouteNumber && oldActionRoute.NAME === actionRoute.Name && oldActionRoute.TxtSegMils === actionRoute.TxtSegMi;
       });
       if (oldMatchingRoute) {
         combinedRoute['TAPsurfTy'] = oldMatchingRoute.TAPsurfTy || 'No data';
@@ -103,7 +111,7 @@ export class DataService {
 
       // Matching route in seasonal closure data
       let seasonalRoute = seasonalData.find(seasRoute => {
-        return (actionRoute.RouteNumber === seasRoute.RouteNumber && actionRoute.Name === seasRoute.Name && actionRoute.MgtRngDist === seasRoute.MgtRngDist) && (actionRoute.TxtSegMi === seasRoute.TxtSegMi || actionRoute.TxtBMP === seasRoute.TxtBMP || actionRoute.TxtEMP === seasRoute.TxtEMP);
+        return (actionRoute.RouteNumber === seasRoute.RouteNumber && actionRoute.Name === seasRoute.Name) && (actionRoute.TxtSegMi === seasRoute.TxtSegMi || actionRoute.TxtBMP === seasRoute.TxtBMP || actionRoute.TxtEMP === seasRoute.TxtEMP);
       });
       if (seasonalRoute) {
         combinedRoute['AltCSeasonalDates'] = seasonalRoute.AltCSeasonalDates || 'No data';
@@ -114,9 +122,10 @@ export class DataService {
     });
 
     this.combinedRoutes = routes;
-    await this.addWildlifeData();
     await this.addGISData();
-
+    await this.addFEISData();
+    await this.addWildlifeData();
+    
     // Storage
     try {
       clear();
@@ -167,7 +176,7 @@ export class DataService {
       }
 
       let matchingRoute = this.combinedRoutes.find(route => {
-        return route.RouteNumber === wildRoute.RouteNumber && route.Name === wildRoute.Name && (route.MgtRngDist === wildRoute.RangerDistrict || route.AdmRngDist === wildRoute.RangerDistrict) && route.TxtBMP === wildRoute.BMP;
+        return route.RouteNumber === wildRoute.RouteNumber && route.Name === wildRoute.Name && route.TxtBMP === wildRoute.BMP;
       });
       if (matchingRoute) {
         matchingRoute.WildlifeData.push(wildRoute);
@@ -185,11 +194,10 @@ export class DataService {
         let masterRouteLength: string = masterRouteGISMiles.toFixed(2);
         let gisRouteLength: string = gisRouteGISMiles.toFixed(2);
 
-        return (masterRoute.RouteNumber === gisRoute.RouteNumber && masterRoute.AdmRngDist === gisRoute.AdmRngDist) && ((masterRoute.TxtBMP === gisRoute.TxtBMP && masterRoute.TxtEMP === gisRoute.TxtEMP) || (parseFloat(masterRouteLength) === parseFloat(gisRouteLength)));
+        return (masterRoute.RouteNumber === gisRoute.RouteNumber && masterRoute.Name === gisRoute.Name) && ((masterRoute.TxtBMP === gisRoute.TxtBMP && masterRoute.TxtEMP === gisRoute.TxtEMP) || (parseFloat(masterRouteLength) === parseFloat(gisRouteLength)));
       });
       if (matchingRoute) {
         matchingRoute['UniqIDGIS'] = gisRoute.UniqIDGIS;
-        matchingRoute['OBJECTID_1'] = gisRoute.OBJECTID_1;
         matchingRoute['MVUMdescription'] = gisRoute.MVUMdescription;
         matchingRoute['AltCSeasonalDates'] = gisRoute.AltCseaDates;
         if (matchingRoute.AltAmgt2 === 'No data' && gisRoute.MVUMdescription !== 'No data') {
@@ -198,6 +206,72 @@ export class DataService {
         if (gisRoute.MVUMdescription === 'No data' && matchingRoute.AltAmgt2 !== 'No data') {
           matchingRoute.MVUMdescription = matchingRoute.AltAmgt2;
         }
+      }
+    });
+  }
+
+  private async addFEISData() {
+    const feisActionRoutes = await this.http.get<any[]>('assets/data/feisAction.json').toPromise();
+    const feisGISRoutes = await this.http.get<any[]>('assets/data/feisRoutes.json').toPromise();
+
+    feisActionRoutes.forEach(feisRoute => {
+      // Add in fields FEIS routes don't have.
+      feisRoute['AltAmgt1'] = 'No data';
+      feisRoute['AltAmgt2'] = 'No data';
+      feisRoute['AltAmgt3'] = 'No data';
+      feisRoute['AltAmgtSea'] = 'No data';
+      feisRoute['AltAmgtPublic'] = 'No data';
+      feisRoute['AltC'] = 'No data';
+      feisRoute['AltCmgt1'] = 'No data';
+      feisRoute['AltCmgt2'] = 'No data';
+      feisRoute['AltCmgt3'] = 'No data';
+      feisRoute['AltCmgtSea'] = 'No data';
+      feisRoute['AltCmgtPublic'] = 'No data';
+      feisRoute['AltCSeasonalDates'] = 'No data';
+      feisRoute['WildlifeData'] = [];
+      feisRoute['UniqIDGIS'] = null;
+      feisRoute['TAPsurfTy'] = 'No data';
+      feisRoute['TAPcmnts'] = 'No data';;
+      feisRoute['CurrMTC'] = 'No data';;
+      feisRoute['DesiredMTC'] = 'No data';;
+      feisRoute['County'] = 'UNKNOWN';
+
+      // Add in FEIS GIS data fields
+      let gisMatchingRoute = feisGISRoutes.find(gisRoute => {
+        return gisRoute.RouteNumber === feisRoute.RouteNumber && gisRoute.Name === feisRoute.Name && gisRoute.BMP === feisRoute.TxtBMP && gisRoute.EMP === feisRoute.TxtEMP;
+      });
+      
+      if (gisMatchingRoute) {
+        feisRoute['MVUMdescription'] = gisMatchingRoute.MVUMdescription || 'No data';
+        feisRoute['AltFseaDates'] = gisMatchingRoute.AltFseaDates || 'No data';
+        feisRoute['AltFmod'] = gisMatchingRoute.AltFmod;
+        feisRoute['AltF2020ModNo'] = gisMatchingRoute.AltF2020ModNo;
+      } else {
+        feisRoute['MVUMdescription'] = 'No data';
+        feisRoute['AltFseaDates'] = 'No data';
+        feisRoute['AltFmod'] = '';
+        feisRoute['AltF2020ModNo'] = '';
+      }
+
+      // Add FIES route to master route list
+      let matchingRoute = this.combinedRoutes.find(masterRoute => {
+        return masterRoute.RouteNumber === feisRoute.RouteNumber && masterRoute.Name === feisRoute.Name && masterRoute.TxtBMP === feisRoute.TxtBMP && masterRoute.TxtEMP === feisRoute.TxtEMP;
+      });
+      
+      if (matchingRoute) {
+        matchingRoute['AltF'] = feisRoute.AltF;
+        matchingRoute['AltFmgt1'] = feisRoute.AltFmgt1;
+        matchingRoute['AltFmgt2'] = feisRoute.AltFmgt2;
+        matchingRoute['AltFmgt3'] = feisRoute.AltFmgt3;
+        matchingRoute['AltFmgtSea'] = feisRoute.AltFmgtSea;
+        matchingRoute['AltFmgtPublic'] = feisRoute.AltFmgtPublic;
+        matchingRoute['MVUMdescription'] = feisRoute.MVUMdescription;
+        matchingRoute['AltFseaDates'] = feisRoute.AltFseaDates;
+        matchingRoute['AltFmod'] = feisRoute.AltFmod;
+        matchingRoute['AltF2020ModNo'] = feisRoute.AltF2020ModNo;
+      } else {
+        feisRoute['ID'] = this.combinedRoutes.length + 1;
+        this.combinedRoutes.push(feisRoute);
       }
     });
   }
@@ -278,13 +352,13 @@ export class DataService {
 
     routes.forEach(route => {
       let segMiles = typeof route['TxtSegMi'] === 'number' ? route['TxtSegMi'] : route['GIS_Miles'] || 0;
-      let routeIsClosed  = false;
+      let routeIsClosed = false;
 
       if (route['AltAmgtPublic'] !== 'No data' && route[altPublicParam] !== 'No data') {
         routeIsClosed = (route['AltAmgtPublic'] === 'Open to public motor vehicle use' && route[altPublicParam] !== 'Open to public motor vehicle use');
       } else if (route.MVUMdescription.includes('open') && route[altPublicParam] !== 'No data') {
         routeIsClosed = route[altPublicParam] !== 'Open to public motor vehicle use';
-      } else {
+      } else if (route.MVUMdescription === 'No data') {
         routeIsClosed = route[altStatusParam] === 'NFS subtraction';
       }
 
@@ -301,7 +375,7 @@ export class DataService {
           }
         }
 
-        const district = route['MgtRngDist'];
+        const district = route['AdmRngDist'];
         if (district) {
           if (!result.districts.hasOwnProperty(district)) {
             result.districts[district] = segMiles;
@@ -337,7 +411,8 @@ export class DataService {
             B: '0.0',
             C: '0.0',
             D: '0.0',
-            E: '0.0'
+            E: '0.0',
+            F: '0.0'
           };
         }
         result[county][alt] = closures[alt].counties[county] || '0.0';
@@ -386,7 +461,7 @@ export class DataService {
 
     routes.forEach(route => {
       let segMiles = typeof route['TxtSegMi'] === 'number' ? route['TxtSegMi'] : route['GIS_Miles'] || 0;
-      let district = route['MgtRngDist'];
+      let district = route['AdmRngDist'];
 
       if (route[publicParam] !== 'No data') {
         totalMiles += segMiles;

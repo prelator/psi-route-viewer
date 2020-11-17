@@ -15,10 +15,12 @@ export class SummaryComponent implements OnInit {
   altCTotals;
   altDTotals;
   altETotals;
+  altFTotals
   altBClosures;
   altCClosures;
   altDClosures;
   altEClosures;
+  altFClosures
   countyClosures;
   districtClosures;
   mvumRoutes;
@@ -31,11 +33,13 @@ export class SummaryComponent implements OnInit {
     this.altCTotals = await this._dataService.getAltTotals('C');
     this.altDTotals = await this._dataService.getAltTotals('D');
     this.altETotals = await this._dataService.getAltTotals('E');
+    this.altFTotals = await this._dataService.getAltTotals('F');
 
     this.altBClosures = await this._dataService.getAltClosures('B');
     this.altCClosures = await this._dataService.getAltClosures('C');
     this.altDClosures = await this._dataService.getAltClosures('D');
     this.altEClosures = await this._dataService.getAltClosures('E');
+    this.altFClosures = await this._dataService.getAltClosures('F');
 
     this.countyClosures = await this._dataService.getCountyClosures();
     this.districtClosures = await this._dataService.getDistrictClosures();

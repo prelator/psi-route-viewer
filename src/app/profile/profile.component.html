@@ -7,6 +7,10 @@
   </div>
   <div class="row">
     <ul>
+      <li><strong>Beginning Milepost:</strong> {{road.TxtBMP}} miles</li>
+      <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} </li>
+      <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} <span *ngIf="road.TxtSegMi">miles</span></li>
+      <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} <span *ngIf="road.GIS_Miles">miles</span></li>
       <li><strong>Current MVUM Status:</strong> {{road.MVUMdescription}}</li>
       <li><strong>Managing Ranger District:</strong> {{road.MgtRngDist}}</li>
       <li><strong>Administrative Ranger District:</strong> {{road.AdmRngDist}}</li>
@@ -15,14 +19,11 @@
       <li><strong>Road Surface:</strong> {{road.TAPsurfTy}}</li>
       <li><strong>Current Maintenance Level:</strong> {{road.CurrMTC}}</li>
       <li><strong>Desired Maintenance Level:</strong> {{road.DesiredMTC}}</li>
-      <li><strong>Beginning Milepost:</strong> {{road.TxtBMP}} miles</li>
-      <li><strong>Ending Milepost:</strong> {{road.TxtEMP}} </li>
-      <li><strong>Route Segment Length:</strong> {{road.TxtSegMi}} <span *ngIf="road.TxtSegMi">miles</span></li>
-      <li><strong>Mileage (as calculated in GIS):</strong> {{road.GIS_Miles}} <span *ngIf="road.GIS_Miles">miles</span></li>
       <li><strong>Route Segment Length Evaluated in TAP:</strong> {{road.TAPsegMile}} <span *ngIf="road.TAPsegMile">miles</span></li>
       <li><strong>Route Mileposts Evaluated in TAP:</strong> {{road.TAPsegMPs}} <span *ngIf="road.TAPsegMPs">miles</span></li>
       <li><strong>TAP Comments:</strong> {{road.TAPcmnts}}</li>
-      <li><strong>Alt C Proposed Seasonal Closure:</strong> {{road.AltCSeasonalDates}}</li>
+      <li><strong>DEIS Alt C Proposed Seasonal Closure:</strong> {{road.AltCSeasonalDates}}</li>
+      <li><strong>Decision Seasonal Closure:</strong> {{road.AltFseaDates}}</li>
     </ul>
   </div>
   <div class="row mt-2">
@@ -107,6 +108,7 @@
       <thead class="thead-dark">
         <tr>
           <th scope="col"></th>
+          <th scope="col">Decision</th>
           <th scope="col">Alt A</th>
           <th scope="col">Alt B</th>
           <th scope="col">Alt C</th>
@@ -117,6 +119,7 @@
       <tbody>
         <tr>
           <th>Management Recommendation</th>
+          <td>{{road.AltF}}</td>
           <td>{{road.AltAmgt1}}</td>
           <td>{{road.AltB}}</td>
           <td>{{road.AltC}}</td>
@@ -125,6 +128,7 @@
         </tr>
         <tr>
           <th>Type of Management</th>
+          <td>{{road.AltFmgt1}}</td>         
           <td>Keep route classification as is</td>
           <td>{{road.AltBmgt1}}</td>
           <td>{{road.AltCmgt1}}</td>
@@ -133,6 +137,7 @@
         </tr>
         <tr>
           <th>Route Class Management</th>
+          <td>{{road.AltFmgt2}}</td>
           <td>{{road.AltAmgt2}}</td>
           <td>{{road.AltBmgt2}}</td>
           <td>{{road.AltCmgt2}}</td>
@@ -141,6 +146,7 @@
         </tr>
         <tr>
           <th>Mitigation or Maintenance Management</th>
+          <td>{{road.AltFmgt3}}</td>
           <td>{{road.AltAmgt3}}</td>
           <td>{{road.AltBmgt3}}</td>
           <td>{{road.AltCmgt3}}</td>
@@ -149,14 +155,16 @@
         </tr>
         <tr>
           <th>Seasonal Closure Management</th>
+          <td>{{road.AltFmgtSea}} <span *ngIf="road.AltFseaDates !=='No data'">({{road.AltFseaDates}})</span></td>
           <td>{{road.AltAmgtSea}}</td>
           <td>{{road.AltBmgtSea}}</td>
-          <td>{{road.AltCmgtSea}} <span *ngIf="road.AltCSeasonalDates !=='N/A'">({{road.AltCSeasonalDates}})</span></td>
+          <td>{{road.AltCmgtSea}} <span *ngIf="road.AltCSeasonalDates !=='No data'">({{road.AltCSeasonalDates}})</span></td>
           <td>{{road.AltDmgtSea}}</td>
           <td>{{road.AltEmgtSea}}</td>
         </tr>
         <tr>
           <th>Open to Public Motor Vehicle Use?</th>
+          <td>{{road.AltFmgtPublic}}</td>
           <td>{{road.AltAmgtPublic}}</td>
           <td>{{road.AltBmgtPublic}}</td>
           <td>{{road.AltCmgtPublic}}</td>
