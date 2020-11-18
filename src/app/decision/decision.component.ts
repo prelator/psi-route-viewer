@@ -17,13 +17,14 @@ export class DecisionComponent implements OnInit {
   changedClosed;
   changedOpen;
   closedConflict;
+  tapClosures;
 
   async ngOnInit() {
     const allRoutes = await this._dataService.getRoutes();
-    const altTotals = await this._dataService.getAltTotals('F');
-    const altF = await this._dataService.getAltClosures('F');
+    const allClosures = await this._dataService.getAltTotals('F');
+    const newClosures = await this._dataService.getAltClosures('F');
 
-    this.newClosedRoutes = altF.closedRoutes.sort((a, b) => {
+    this.newClosedRoutes = newClosures.closedRoutes.sort((a, b) => {
       if (a.AdmRngDist < b.AdmRngDist) {
         return -1;
       } else if (a.AdmRngDist > b.AdmRngDist) {
@@ -33,8 +34,20 @@ export class DecisionComponent implements OnInit {
       }
     });
 
-    this.closedConflict = altF.closedRoutes.filter(route => {
+    this.closedConflict = newClosures.closedRoutes.filter(route => {
       return route.TxtSegMi > 0.1 && route.QuietUse === 'Yes';
+    }).sort((a, b) => {
+      if (a.AdmRngDist < b.AdmRngDist) {
+        return -1;
+      } else if (a.AdmRngDist > b.AdmRngDist) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    this.tapClosures = newClosures.closedRoutes.filter(route => {
+      return route.TxtSegMi > 0.1 && route.TAPcmnts !== 'No data';
     }).sort((a, b) => {
       if (a.AdmRngDist < b.AdmRngDist) {
         return -1;
@@ -57,7 +70,7 @@ export class DecisionComponent implements OnInit {
       }
     });
 
-    this.highValueClosedRoutes = altTotals.closedRoutes.filter(route => {
+    this.highValueClosedRoutes = allClosures.closedRoutes.filter(route => {
       return (route.TxtSegMi > 0.1 && (route.TAPrecRat === 'H' || route.TAPrecRat === 'M'));
     }).sort((a, b) => {
       if (a.TAPrecRat === 'H' && b.TAPrecRat !== 'H') {
