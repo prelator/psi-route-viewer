@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-const dbVersion = 4;
+const dbVersion = 5;
 
 const altList = ['A', 'B','C', 'D', 'E', 'F'];
 
@@ -93,7 +93,7 @@ export class DataService {
 
       // Matching old action route
       let oldMatchingRoute = oldActionRoutes.find(oldActionRoute => {
-        return oldActionRoute.RouteNumber === actionRoute.RouteNumber && oldActionRoute.NAME === actionRoute.Name && oldActionRoute.TxtSegMils === actionRoute.TxtSegMi;
+        return oldActionRoute.RouteNumber === actionRoute.RouteNumber && oldActionRoute.NAME === actionRoute.Name && (oldActionRoute.TxtSegMils === actionRoute.TxtSegMi || oldActionRoute.TxtEndMP === actionRoute.TxtEMP);
       });
       if (oldMatchingRoute) {
         combinedRoute['TAPsurfTy'] = oldMatchingRoute.TAPsurfTy || 'No data';
@@ -202,6 +202,7 @@ export class DataService {
         matchingRoute['AltCSeasonalDates'] = gisRoute.AltCseaDates;
         if (matchingRoute.AltAmgt2 === 'No data' && gisRoute.MVUMdescription !== 'No data') {
           matchingRoute.AltAmgt2 = gisRoute.MVUMdescription;
+          matchingRoute.AltAmgtPublic = gisRoute.MVUMdescription.toLowerCase().includes('open') ? 'Open to public motor vehicle use' : 'Closed to public motor vehicle use';
         }
         if (gisRoute.MVUMdescription === 'No data' && matchingRoute.AltAmgt2 !== 'No data') {
           matchingRoute.MVUMdescription = matchingRoute.AltAmgt2;
@@ -246,8 +247,10 @@ export class DataService {
         feisRoute['AltFseaDates'] = gisMatchingRoute.AltFseaDates || 'No data';
         feisRoute['AltFmod'] = gisMatchingRoute.AltFmod;
         feisRoute['AltF2020ModNo'] = gisMatchingRoute.AltF2020ModNo;
-        feisRoute.AltAmgt2 = feisRoute.MVUMdescription;
-        feisRoute.AltAmgtPublic = feisRoute.MVUMdescription !== 'No data' && feisRoute.MVUMdescription.toLowerCase().includes('open') ? 'Open to public motor vehicle use' : 'Closed to public motor vehicle use';
+        if (feisRoute.MVUMdescription !== 'No data') {
+          feisRoute.AltAmgt2 = feisRoute.MVUMdescription;
+          feisRoute.AltAmgtPublic = feisRoute.MVUMdescription.toLowerCase().includes('open') ? 'Open to public motor vehicle use' : 'Closed to public motor vehicle use';
+        }
       } else {
         feisRoute['MVUMdescription'] = 'No data';
         feisRoute['AltFseaDates'] = 'No data';

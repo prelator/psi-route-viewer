@@ -14,10 +14,12 @@ export class DecisionComponent implements OnInit {
   highValueClosedRoutes;
   newClosedRoutes;
   newClosedHighValueRoutes;
+  newClosedHighValueRoutesNoTAP;
   changedClosed;
   changedOpen;
   closedConflict;
   tapClosures;
+  allChangedRoutes;
 
   async ngOnInit() {
     const allRoutes = await this._dataService.getRoutes();
@@ -70,6 +72,18 @@ export class DecisionComponent implements OnInit {
       }
     });
 
+    this.newClosedHighValueRoutesNoTAP = this.newClosedRoutes.filter(route => {
+      return route.TAPcmnts === 'No data' && (route.TxtSegMi > 0.1 && (route.TAPrecRat === 'H' || route.TAPrecRat === 'M'));
+    }).sort((a, b) => {
+      if (a.TAPrecRat === 'H' && b.TAPrecRat !== 'H') {
+        return -1;
+      } else if (b.TAPrecRat === 'H' && a.TAPrecRat !== "H") {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
     this.highValueClosedRoutes = allClosures.closedRoutes.filter(route => {
       return (route.TxtSegMi > 0.1 && (route.TAPrecRat === 'H' || route.TAPrecRat === 'M'));
     }).sort((a, b) => {
@@ -105,6 +119,17 @@ export class DecisionComponent implements OnInit {
         return 0;
       }
     });
-  }
 
+    this.allChangedRoutes = allRoutes.filter(route => {
+      return route.AltFmod && route.AltFmod !== 'No change made';
+    }).sort((a, b) => {
+      if (a.AdmRngDist < b.AdmRngDist) {
+        return -1;
+      } else if (a.AdmRngDist > b.AdmRngDist) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
 }
