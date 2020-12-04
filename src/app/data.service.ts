@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
-const dbVersion = 5;
+const dbVersion = 6;
 
 const altList = ['A', 'B','C', 'D', 'E', 'F'];
 
@@ -239,7 +239,7 @@ export class DataService {
 
       // Add in FEIS GIS data fields
       let gisMatchingRoute = feisGISRoutes.find(gisRoute => {
-        return gisRoute.RouteNumber === feisRoute.RouteNumber && gisRoute.Name === feisRoute.Name && gisRoute.BMP === feisRoute.TxtBMP && gisRoute.EMP === feisRoute.TxtEMP;
+        return gisRoute.RouteNumber === feisRoute.RouteNumber && gisRoute.Name === feisRoute.Name && ((gisRoute.BMP === feisRoute.TxtBMP || gisRoute.EMP === feisRoute.TxtEMP) || (gisRoute.SegLenth === feisRoute.TxtSegMi));
       });
 
       if (gisMatchingRoute) {
