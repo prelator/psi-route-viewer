@@ -97,7 +97,7 @@ export class DecisionComponent implements OnInit {
     });
 
     this.changedClosed = allRoutes.filter(route => {
-    	return route.AltFmgtPublic !== 'No data' && (route.AltCmgtPublic === 'No data' || route.AltCmgtPublic === 'Open to public motor vehicle use') && route.AltCmgtPublic !== route.AltFmgtPublic && route.AltFmgtPublic !== 'Open to public motor vehicle use';
+    	return route.AltFmgtPublic !== 'No data' && (route.AltCmgtPublic === 'No data' || route.AltCmgtPublic === 'Open to public motor vehicle use') && route.AltCmgtPublic !== route.AltFmgtPublic && route.AltFmgtPublic !== 'Open to public motor vehicle use' && route.AltFmod && route.AltFmod !== 'No change made';
     }).sort((a, b) => {
       if (a.AdmRngDist < b.AdmRngDist) {
         return -1;
@@ -109,7 +109,7 @@ export class DecisionComponent implements OnInit {
     });
 
     this.changedOpen = allRoutes.filter(route => {
-    	return route.AltCmgtPublic !== route.AltFmgtPublic && route.AltFmgtPublic === 'Open to public motor vehicle use';
+    	return route.AltCmgtPublic !== route.AltFmgtPublic && route.AltFmgtPublic === 'Open to public motor vehicle use' && route.AltFmod && route.AltFmod !== 'No change made';
     }).sort((a, b) => {
       if (a.AdmRngDist < b.AdmRngDist) {
         return -1;
