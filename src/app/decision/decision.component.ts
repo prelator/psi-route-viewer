@@ -20,11 +20,22 @@ export class DecisionComponent implements OnInit {
   closedConflict;
   tapClosures;
   allChangedRoutes;
+  hhRoutes;
 
   async ngOnInit() {
     const allRoutes = await this._dataService.getRoutes();
     const allClosures = await this._dataService.getAltTotals('F');
     const newClosures = await this._dataService.getAltClosures('F');
+
+    this.hhRoutes = allRoutes.filter(route => route.TAPrecRat === 'HH').sort((a, b) => {
+      if (a.AdmRngDist < b.AdmRngDist) {
+        return -1;
+      } else if (a.AdmRngDist > b.AdmRngDist) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
 
     this.newClosedRoutes = newClosures.closedRoutes.sort((a, b) => {
       if (a.AdmRngDist < b.AdmRngDist) {
