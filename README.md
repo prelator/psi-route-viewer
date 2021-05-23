@@ -4,7 +4,7 @@
 https://psi-route-viewer.firebaseapp.com/
 
 ## Description
-I build this site to display tabular route data for the Pike San Isabel National Forest Travel Management Plan in a more readable format than the giant spreadsheets provided by the Forest Service. This was related to my advoacy work for Colorado Offroad Enterprise and Colorado Offroad Trail Defenders, writing public comments and objections to fight closures of four-wheel-drive roads in the Colorado mountains.
+I built this site to display tabular route data for the Pike San Isabel National Forest Travel Management Plan in a more readable format than the giant spreadsheets provided by the Forest Service. This was related to my advoacy work for Colorado Offroad Enterprise and Colorado Offroad Trail Defenders, writing public comments and objections opposing closures of four-wheel-drive roads in the Colorado mountains.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.7.
 
